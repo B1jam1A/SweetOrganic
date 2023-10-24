@@ -1,18 +1,20 @@
 # Start your image with a node base image
-FROM node:18
+FROM node:18-alpine
 
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where availabe (npm@5+)
 COPY package*.json ./
-RUN npm install
+
 # If you are building your code for production
 # RUN npm ci --omit=dev
 
 COPY . .
+
+RUN npm install
 
 EXPOSE 3000
 
