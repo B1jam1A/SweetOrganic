@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  mongo_db:
+    container_name: SO_MongoDB_Utilisateur
+    image: mongo:latest   
+    restart: always
+    volumes:
+      - mongo_db:/data/db 
+    ports:
+      - 27018:27017
+    
+  app:
+    container_name: SO_API_Utilisateur
+    build: .
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongo_db
+    env_file:
+      - .env
+
+volumes:
+  mongo_db: {}
