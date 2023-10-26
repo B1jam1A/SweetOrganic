@@ -1,5 +1,5 @@
 # Start your image with a node base image
-FROM node:18-alpine
+FROM node:20.9-alpine
 
 # Create app directory
 WORKDIR /app
@@ -17,8 +17,7 @@ COPY . .
 RUN npm install
 
 EXPOSE 3000
-
+ENV DOCKER=true
 # Start server command
 CMD [ "npm", "start" ]
-
 
