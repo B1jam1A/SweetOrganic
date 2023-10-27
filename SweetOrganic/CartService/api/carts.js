@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Cart = require ('../service/models/cartModel');
-const jwt = require('jsonwebtoken');
+const {authentification} = require('./verifyToken')
 
 const panier = [
   { id: 1, nom: 'Article 1', prix: 10.99 },
@@ -22,17 +22,6 @@ function getTotalPrice(articlesList){
     price += getArticlePrice(articlesList[i]);
   }
   return price;
-}
-
-//Middleware pour valier le token reçu par RabbitMQ
-function validateJWT(token){
-  try{
-    // Vérifier et décoder le jeton
-
-    return true;
-  } catch(err){
-    return false;
-  }
 }
 
 /* GET cart page. */
@@ -59,7 +48,7 @@ router.get('/', async function(req, res, next) {
 var cartsRoute = router.route('/carts');
 
 // Create endpoint for POSTS
-cartsRoute.post(async function(req, res){
+cartsRoute.post(authentification, async function(req, res){
 
   //TODO: Ajouter une condition pour les utilisateurs déjà inscrit.
   //Lorsqu'un nouveau utilisateur créer son compte, un panier lui est attribué.

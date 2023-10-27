@@ -16,7 +16,7 @@ var port = process.nextTick.PORT || 3000;
 //Connect to the beerlocker MongoDB
 //mongoose.connect(MONGODB_URL); 
 connectToDb();
-connectToMsgBroker();
+//connectToMsgBroker();
 
 //Create our Express application
 var app = express(); 

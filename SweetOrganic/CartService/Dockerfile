@@ -17,7 +17,7 @@ COPY . .
 RUN npm install
 
 EXPOSE 3000
-ENV DOCKER=true
+ENV DOCKER = 'true'
 # Start server command
 CMD [ "npm", "start" ]
 
