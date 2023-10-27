@@ -9,7 +9,7 @@ services:
     volumes:
       - mongo_db:/data/db 
     ports:
-      - 27018:27018
+      - 27018:27017
     
   app:
     container_name: SO_API_Utilisateur
