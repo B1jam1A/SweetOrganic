@@ -9,6 +9,8 @@ const authentificationCustomer = async(req, res, next) =>{
         const decodedToken = jwt.verify(authToken, process.env.TOKEN_SECRET);
         //Cherche le tocken dans le tableau de tokens enregistré dans la base de données
         const customer = await Customer.findOne({_id: decodedToken._id, 'authTokens.authToken': authToken});
+
+        console.log(decodedToken);
         
         if(!customer){
             throw new Error();

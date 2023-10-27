@@ -96,7 +96,13 @@ const customerSchema = new mongoose.Schema({
 
 //Créer et assigner un token à un utilisateur et l'enregistrer dans la base de données.
 customerSchema.methods.generateAuthTokenAndSaveCustomer = async function() {
-    const authToken = jwt.sign({_id: this._id.toString()}, process.env.TOKEN_SECRET);
+    // Ajouter l'attribut user: "customer" au payload du token
+    const payload = {
+        _id: this._id.toString(),
+        user: "customer"
+    };
+
+    const authToken = jwt.sign(payload, process.env.TOKEN_SECRET);
     this.authTokens.push({authToken});
     await this.save();
     return authToken;

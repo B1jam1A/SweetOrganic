@@ -38,7 +38,13 @@ const adminSchema = new mongoose.Schema({
 
 //Créer et assigner un token à un utilisateur et l'enregistrer dans la base de données.
 adminSchema.methods.generateAuthTokenAndSaveAdmin = async function() {
-    const authToken = jwt.sign({_id: this._id.toString()}, process.env.TOKEN_SECRET);
+    // Ajouter l'attribut user: "admin" au payload du token
+    const payload = {
+        _id: this._id.toString(),
+        user: "admin"
+    };
+
+    const authToken = jwt.sign(payload, process.env.TOKEN_SECRET);
     this.authTokens.push({authToken});
     await this.save();
     return authToken;
