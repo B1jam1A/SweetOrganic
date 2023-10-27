@@ -69,7 +69,13 @@ router.get('/', authentification, async function(req, res, next) {
     const articlesList = cart.articlesList;
 
     //Affiche la page panier avec les articles
-    res.render('carts', { title: 'Mon panier', articlesList, getArticlePrice, getTotalPrice});
+    //res.render('carts', { title: 'Mon panier', articlesList, getArticlePrice, getTotalPrice});
+    var listArticlePrice = [];
+    for(let i=0; i < articlesList.length; i++){
+      listArticlePrice.push(getArticlePrice(articlesList[i]));
+    }
+    const totalPrice = getTotalPrice(articlesList);
+    res.send({ title: 'Mon panier', articlesList, listArticlePrice, totalPrice});
   
   }catch(err){
     res.json(err);
