@@ -51,19 +51,20 @@ async function verifyCart(req, res, next){
 /* GET cart page. */
 router.get('/', authentification, async function(req, res, next) {
   try{
-
+    console.log("Récupère le panier");
     //Récupère le panier
     const temp_cart = await Cart.find({ user_id: req.decodedToken._id}); //Tableau panier 
     var cart = temp_cart[0];
 
     //Regarde si le tableau est vide
-    if(cart === 0){
+    if(!cart){
+      console.log("Aucun panier trouvé");
       let new_cart = new Cart();
       new_cart.user_id = req.decodedToken._id;
       cart = new_cart;
       await cart.save();
     }
-
+    
     //Récupère les articles
     const articlesList = cart.articlesList;
 
