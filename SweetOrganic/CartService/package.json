@@ -13,9 +13,11 @@
     "amqplib": "^0.10.3",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-session": "^1.17.3",
     "layout": "^2.2.0",
     "mongodb": "^6.2.0",
     "mongoose": "^7.6.3",
+    "morgan": "^1.10.0",
     "nodemon": "^3.0.1",
     "pug": "^3.0.2",
     "request": "^2.88.2"

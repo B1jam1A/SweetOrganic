@@ -5,7 +5,8 @@ const CartSchema = new mongoose.Schema({
     date: String,
     articlesList: [{
         idArticle: String,
-        qty: Number
+        qty: Number,
+        price: Number
     }]
 });
 

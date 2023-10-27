@@ -2,14 +2,44 @@ var express = require('express');
 var router = express.Router();
 var Cart = require ('../service/models/cartModel');
 
-/* GET cart page. */
-/*router.get('/', function(req, res, next) {
-  res.render('carts', { title: 'Mon panier' });
-});*/
+const panier = [
+  { id: 1, nom: 'Article 1', prix: 10.99 },
+  { id: 2, nom: 'Article 2', prix: 5.99 },
+  // Ajoutez plus d'articles au panier
+];
+const idpanier = '653b60650da6fe35c02fd5f1';
 
-router.get('/', function(req, res) {
-  res.json({message: 'Votre panier est vide !'});
+function getArticlePrice(article){
+  return article.price * article.qty;
+}
+
+function getTotalPrice(articlesList){
+  var price = 0;
+  for(let i=0; i < articlesList.length; i++){
+    price += getArticlePrice(articlesList[i]);
+  }
+  return price;
+}
+
+/* GET cart page. */
+router.get('/', async function(req, res, next) {
+  try{
+    //Récupère le panier
+    const cart = await Cart.findById(idpanier);
+    //Récupère les articles
+    const articlesList = cart.articlesList;
+    //Affiche la page panier avec les articles
+
+    res.render('carts', { title: 'Mon panier', articlesList, getArticlePrice, getTotalPrice});
+  }catch(err){
+    res.json(err);
+  }
 });
+
+
+/*router.get('/', function(req, res) {
+  res.json({message: 'Votre panier est vide !'});
+});*/
 
 var cartsRoute = router.route('/carts');
 
@@ -18,7 +48,7 @@ cartsRoute.post(async function(req, res){
 
   //TODO: Ajouter une condition pour les utilisateurs déjà inscrit.
   //Lorsqu'un nouveau utilisateur créer son compte, un panier lui est attribué.
-  //Pour maintenir les performances du database:
+  //Pour mainteir les performances du database:
   //  - il serait préférable de supprimer les paniers vides de la base lorsqu'un utilisateur quitte la session.
   //  - de créer un nouveau panier pour utilisateur qui non pas de panier lorsqu'il se connecte
 
@@ -58,7 +88,9 @@ var addArticleRoute = router.route('/carts/:cart_id/articles');
 // Ajouter un article au panier
 addArticleRoute.post(async function(req, res){
   try{
+    //Identifiant du panier
     const cart_id = req.params.cart_id;
+    //Nouvelle article
     const newArticle = {
       idArticle: req.body.idArticle,
       qty: req.body.qty
@@ -84,6 +116,8 @@ addArticleRoute.post(async function(req, res){
 
     await cart.save()
     res.json({message: 'Nouvel article ajouté avec succès'});
+
+    //addArticleRoute.render()
 
   }catch(err){
     res.status(500).json({ error: 'Erreur lors de l\'ajout de l\'article' });
@@ -163,4 +197,6 @@ articleRoute.delete(async function(req, res){
     res.send(err);
   }
 });
+
+
 module.exports = router;
