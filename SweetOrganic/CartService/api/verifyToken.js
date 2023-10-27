@@ -9,7 +9,7 @@ const authentification = async(req, res, next) =>{
 
 
         console.log(decodedToken);
-
+        req.decodedToken = decodedToken;
         next();
     }catch(err){
         res.status(400).send("Access Denied!");
