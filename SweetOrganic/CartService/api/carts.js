@@ -1,18 +1,21 @@
 var express = require('express');
 var router = express.Router();
 var Cart = require ('../service/models/cartModel');
+const jwt = require('jsonwebtoken');
 
 const panier = [
   { id: 1, nom: 'Article 1', prix: 10.99 },
   { id: 2, nom: 'Article 2', prix: 5.99 },
   // Ajoutez plus d'articles au panier
 ];
-const idpanier = '653b60650da6fe35c02fd5f1';
-
+const idpanier = '653b7b9fa6a079a29846fba3';
+ 
+//Renvoie le prix d'un article
 function getArticlePrice(article){
   return article.price * article.qty;
 }
 
+//Renvoie le prix total du panier
 function getTotalPrice(articlesList){
   var price = 0;
   for(let i=0; i < articlesList.length; i++){
@@ -21,9 +24,21 @@ function getTotalPrice(articlesList){
   return price;
 }
 
+//Middleware pour valier le token reçu par RabbitMQ
+function validateJWT(token){
+  try{
+    // Vérifier et décoder le jeton
+
+    return true;
+  } catch(err){
+    return false;
+  }
+}
+
 /* GET cart page. */
 router.get('/', async function(req, res, next) {
   try{
+    //Valider le jeton JWT reçu par RabbitMQ
     //Récupère le panier
     const cart = await Cart.findById(idpanier);
     //Récupère les articles
