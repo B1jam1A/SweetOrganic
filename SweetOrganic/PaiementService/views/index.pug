@@ -1,0 +1,27 @@
+doctype html
+html
+  head
+    title Paiement
+  body
+    h1 Effectuer un paiement
+    form(action="Payment/charge", method="post")
+      script(src="https://checkout.stripe.com/checkout.js")
+      button(id="customButton") Payer 10 $
+      script.
+        var handler = StripeCheckout.configure({
+          key: public_key,
+          token: function(token) {
+            document.querySelector("input[name=stripeToken]").value = token.id;
+            document.querySelector("form").submit();
+          }
+        });
+        document.querySelector('#customButton').addEventListener('click', function(e) {
+          e.preventDefault();
+          handler.open({
+            name: 'Votre entreprise',
+            description: 'Paiement de 10 $',
+            currency: 'usd',
+            amount: 1000
+          });
+        });
+      input(type="hidden", name="stripeToken")
