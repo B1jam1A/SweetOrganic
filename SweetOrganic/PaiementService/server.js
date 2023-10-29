@@ -1,9 +1,13 @@
 //Get the packages we need
 var express = require('express');
 var bodyParser = require('body-parser');
-
+const connectToDb = require('./config/paymentDB');
+const Payment = require('./service/models/paymentModel')
 const dotenv = require('dotenv');
 dotenv.config();
+
+//Connect to the MongoDB
+connectToDb();
 
 //Library Stripe
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -49,6 +53,7 @@ async function createLineItem(cart){
     return line_items;
 }
 
+//Creation d'une session avec Stripe
 app.post('/create-checkout-session', async(req, res) => {
     const session = await stripe.checkout.sessions.create({
         line_items: [
@@ -59,11 +64,40 @@ app.post('/create-checkout-session', async(req, res) => {
             },
         ],
         mode: 'payment',
-        success_url: `${DOMAIN}/success`,
+        success_url: `${DOMAIN}/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${DOMAIN}/error`,
     });
 
+    console.log("Sessions status : "+ session.status);
+    console.log("Redirection vers une nouvelle page...");
     res.redirect(303, session.url);
+});
+
+
+app.get('/success', async (req, res) => {
+    // Récupérez la l'indentifiant de la session depuis l'URL
+    const session_id = req.query.session_id;
+    const session = await stripe.checkout.sessions.retrieve(session_id);
+    
+    console.log("Paiement status : "+ session.payment_status);
+    //Si la transation a été un success, enregistre le payment dans la base de donnée
+    if(session.payment_status === "paid"){
+        // Le paiement a été effectué avec succès
+        var payment = new Payment();
+
+        payment.user_id = "123456";
+        payment.amount = session.amount_total;
+        payment.status = session.status;
+        payment.payment_date = new Date();
+        payment.intent_id = session.payment_intent;
+        
+        await payment.save();
+    } else {
+        console.log("Paiement échoué.");
+    }
+
+    //Affiche la page de confirmation de paiement
+    res.render('success', {session});
 });
 
 app.get('/checkout', async(req, res) => {
