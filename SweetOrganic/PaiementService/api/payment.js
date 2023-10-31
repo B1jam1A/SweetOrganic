@@ -6,5 +6,7 @@ router.get('/', async(req, res) =>{
     const public_key = process.env.STRIPE_PUBLIC_KEY;
     res.render('index', public_key);
 });
-  
+
+
+
 module.exports = router;
