@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 const connectToDb = require('./config/paymentDB');
 const Payment = require('./service/models/paymentModel')
 const dotenv = require('dotenv');
+const {createPrice, createLineItem} = require('./service/controllers/stripeController');
 dotenv.config();
 
 //Connect to the MongoDB
@@ -16,9 +17,9 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 var app = express(); 
 
 //Use environment defined port or 4242
-var port = process.nextTick.PORT || 4242;
-const DOMAIN = 'http://localhost:'+port;
-
+var port = process.env.PORT;
+const DOMAIN = `http://localhost:${port}`;
+console.log('DOMAINE = ' + DOMAIN);
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({
@@ -28,45 +29,24 @@ app.use(bodyParser.urlencoded({
 // Utiliser EJS comme moteur de rendu
 app.set('view engine', 'pug');
 
-// Créez un price_id pour un produit
-async function createPrice(product){
-    return await stripe.prices.create({
-        unit_amount: product.unit_amount,
-        currency: 'eur',
-        product: product._id,
-    });
-}
-
-// Créez une liste d'item avec leurs price_id et la quantité
-async function createLineItem(cart){
-    var line_items = []
-    for(let i = 0; i < cart.articlesList.length; i++){
-        var article = cart.articlesList[i];
-        line_items.push(
-            {
-                price: createPrice(article),
-                quantity: article.qty,
-            }
-        );
-    }
-
-    return line_items;
-}
-
 //Creation d'une session avec Stripe
 app.post('/create-checkout-session', async(req, res) => {
-    const session = await stripe.checkout.sessions.create({
-        line_items: [
-            //createLineItem(req.body.cart)
-            {
-                price: process.env.PRICE_ID,
-                quantity: 1,
-            },
-        ],
-        mode: 'payment',
-        success_url: `${DOMAIN}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${DOMAIN}/error`,
-    });
+    try{
+        var session = await stripe.checkout.sessions.create({
+            line_items: [
+                //createLineItem(req.body.cart)
+                {
+                    price: process.env.PRICE_ID,
+                    quantity: 1,
+                },
+            ],
+            mode: 'payment',
+            success_url: `http://localhost:${port}/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `http://localhost:${port}/error`,
+        });
+    }catch(err){
+        return res.send(err);
+    }
 
     console.log("Sessions status : "+ session.status);
     console.log("Redirection vers une nouvelle page...");
@@ -105,4 +85,4 @@ app.get('/checkout', async(req, res) => {
 });
 
 //Start the server
-app.listen(4242, () => console.log('Running on port 4242')); 
+app.listen(3000, () => console.log('Running on port 3000')); 

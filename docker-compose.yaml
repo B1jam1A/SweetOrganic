@@ -17,12 +17,34 @@ services:
     networks:
       - msgbroker
 
-#Mongodb Service
-  mongo:
-    image: mongo
-    container_name: mongodb
+#Cart Service
+  cart_service:
+    container_name: cart_service
+    build: 
+      context: ./SweetOrganic/CartService
     ports:
-      - '27017:27017'
+      - '3000:3000'
+    volumes:
+      - .:/code
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      cart_mongodb:
+        condition: service_healthy
+    environment:
+      FLASK_DEBUG: "true"
+    env_file:
+      - ./SweetOrganic/CartService/.env
+    networks:
+    - msgbroker
+    - cart_database
+
+#Mongodb Cart Service
+  cart_mongodb:
+    image: mongo
+    container_name: cart_mongodb
+    ports:
+      - '27018:27017'
     networks:
       - cart_database
     healthcheck:
@@ -35,31 +57,51 @@ services:
     #  MONGO_INITDB_ROOT_USERNAME: root
     #  MONGO_INITDB_ROOT_PASSWORD: admin
 
-#Cart Service
-  cart_service:
-    container_name: cart_service
+#Payment Service
+  payment_service:
+    container_name: payment_service
     build: 
-      context: .
+      context: ./SweetOrganic/PaiementService
     ports:
-      - '3000:3000'
+      - '3001:3000'
     volumes:
       - .:/code
     depends_on:
       rabbitmq:
         condition: service_healthy
-      mongo:
+      payment_mongodb:
         condition: service_healthy
     environment:
       FLASK_DEBUG: "true"
     env_file:
-      - .env
+      - ./SweetOrganic/PaiementService/.env
     networks:
     - msgbroker
-    - cart_database
+    - payment_database
+
+#Mongodb Payment Service
+  payment_mongodb:
+    image: mongo
+    container_name: payment_mongodb
+    ports:
+      - '27019:27017'
+    networks:
+      - payment_database
+    healthcheck:
+      test: ["CMD", "mongo", "-d", "admin", "-f", "ping"]
+      interval: 2s
+      timeout: 30s
+      retries: 15
+    restart: always
+    #environment:
+    #  MONGO_INITDB_ROOT_USERNAME: root
+    #  MONGO_INITDB_ROOT_PASSWORD: admin
 
 #Réseaux
 networks:
   msgbroker:
     driver: bridge
   cart_database:
+    driver: bridge
+  payment_database:
     driver: bridge
