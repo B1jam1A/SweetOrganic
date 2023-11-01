@@ -17,7 +17,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 var app = express(); 
 
 //Use environment defined port or 4242
-var port = process.env.PORT;
+const port = process.env.PORT || 3000;
 const DOMAIN = `http://localhost:${port}`;
 console.log('DOMAINE = ' + DOMAIN);
 
@@ -85,4 +85,4 @@ app.get('/checkout', async(req, res) => {
 });
 
 //Start the server
-app.listen(3000, () => console.log('Running on port 3000')); 
+app.listen(3000, () => console.log(`Running on port ${port}`)); 
