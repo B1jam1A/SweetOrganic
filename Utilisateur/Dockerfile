@@ -8,11 +8,18 @@ ARG NODE_VERSION=18.17.1
 
 FROM node:${NODE_VERSION}-alpine
 
+# Install bash
+RUN apk add --no-cache bash
+
 # Use production node environment by default.
 ENV NODE_ENV production
 
 
 WORKDIR /usr/src/app
+
+# Copy wait-for-it script and make it executable
+COPY wait-for-it.sh /usr/src/app/
+RUN chmod +x /usr/src/app/wait-for-it.sh
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.npm to speed up subsequent builds.
@@ -33,4 +40,6 @@ COPY . .
 EXPOSE 3000
 
 # Run the application.
-CMD npm start
+CMD ./wait-for-it.sh some-rabbit:5672 -t 30 -- npm start
+
+
