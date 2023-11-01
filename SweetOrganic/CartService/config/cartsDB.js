@@ -9,7 +9,7 @@ console.log("dbUrl = "+dbUrl)
 async function connectToDb() {
     try {
         await mongoose.connect(
-            dbUrl, 
+            process.env.MONGODB_URL_DOCKER, 
             { useNewUrlParser: true }
         );
         console.log('Connecté à la base de données MongoDB avec succès!');

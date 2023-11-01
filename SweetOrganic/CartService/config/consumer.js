@@ -11,7 +11,7 @@ async function receiveMessage(){
     console.log("Docker host : " + process.env.DOCKER_HOST);
     console.log("url " +amqpUrl);
     //Créez une connection à RabbitMQ
-    const connection = await amqp.connect(amqpUrl);
+    const connection = await amqp.connect(AMQ_URL_DOCKER);
 
     //Creez une file d'attente
     const channel = await connection.createChannel();
