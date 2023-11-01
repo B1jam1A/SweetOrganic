@@ -1,5 +1,5 @@
-//const amqp = require('amqplib');
-const amqp = require('amqp-connection-manager');
+const amqp = require('amqplib');
+//const amqp = require('amqp-connection-manager');
 //Connect to message brocker Rabbitmq
 if(process.env.HOSTNAME){var amqpUrl = process.env.MONGODB_URL_DOCKER;}
 else {var amqpUrl = process.env.MONGODB_URL;}
@@ -88,16 +88,17 @@ async function sendMessage(){
 
 
 const q = "payment"
-const sendToPayment = async() => {
-    const connection = amqp.connect('amqp://rabbitmq:5672');
+/*const sendToPayment = async() => {
+    const connection = await amqp.connect('amqp://rabbitmq:5672');
 
-    let channel = connection.createChannel({
+    /*let channel = connection.createChannel({
         json: true,
         setup: ch =>{
             return ch.assertQueue(q, { durable: true});
         }
-    });
-
+    });*//*
+    const channel = await connection.createChannel();
+    const result = await channel.assertQueue('payment');
     console.log("Send to payment.");
     
     const message = [
@@ -119,6 +120,33 @@ const sendToPayment = async() => {
     //channel.close();
     //connection.close();
 
+}*/
+
+async function sendToPayment(){
+    try{
+        const connection = await amqp.connect('amqp://rabbitmq:5672');
+        const channel = await connection.createChannel();
+        const result = await channel.assertQueue('payment');
+        const message = [
+            {
+                article_name: 'article_3',
+                price_id: 'price_1O7i0iLisy8csVQhhcK7G8Lp',
+                quantity: 4,
+            },
+            {
+                article_name: 'article_2',
+                price_id: 'price_1O7agNLisy8csVQh7EdPL56M',
+                quantity: 2,
+            },
+        ];
+
+        console.log("type avant envoie : "+ typeof message);
+        channel.sendToQueue('payment', Buffer.from(JSON.stringify(message)));
+
+    }catch(error){
+        console.log(error);
+    }
 }
+//sendToPayment()
 
 module.exports.sendToPayment = sendToPayment;

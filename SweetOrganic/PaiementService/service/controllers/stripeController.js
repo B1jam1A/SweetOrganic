@@ -23,11 +23,13 @@ async function createPrice(product){
 }*/
 
 
-async function createLineItem(cartData){
+function createLineItem(cartData){
     console.log("Traiement des items en cours ...");
     var line_items = []
+    console.log(`Longueur de cartData ${cartData.length}`);
     for(let i = 0; i < cartData.length; i++){
         let article = cartData[i];
+        console.log(`Article ${i} : ${article}`);
         line_items.push(
             {
                 price: article.price_id,
@@ -35,6 +37,8 @@ async function createLineItem(cartData){
             }
         );
     }
+    console.log("///// list items /////");
+    console.log(line_items);
     return line_items;
 }
 

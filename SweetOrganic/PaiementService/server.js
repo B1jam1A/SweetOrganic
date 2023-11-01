@@ -15,15 +15,37 @@ dotenv.config();
 connectToDb();
 //receive_articles();
 
-
-const amqp = require('amqp-connection-manager');
+const amqp = require('amqplib');
+//const amqp = require('amqp-connection-manager');
 const { resolve } = require('path');
 //const { channel } = require('diagnostics_channel');
+
+let cartData;
+
+async function connectToMQ(){
+    try{
+        const connection = await amqp.connect('amqp://rabbitmq:5672');
+        const channel = await connection.createChannel();
+        const result = await channel.assertQueue('payment');
+        
+        channel.consume("payment", message => {
+            const messageContent = message.content.toString();
+            cartData = JSON.parse(messageContent);
+            console.log(message.content.toString());
+        })
+        console.log("waiting message");
+
+
+    }catch(error){
+        console.log(error);
+    }
+}
+connectToMQ();
 
 const q = 'payment';
 const receive_articles = async () => {
     //Utilisation des promises pour attendre que la file d'attente soit consommée et renvoyer les données une fois dispo
-    return new Promise( async (resolve, reject) => {
+    /*return new Promise( async (resolve, reject) => {
         const connection = amqp.connect('amqp://rabbitmq:5672');
 
         try{
@@ -50,7 +72,9 @@ const receive_articles = async () => {
         }
 
         //connection.close();
-    });
+    });*/
+
+
 };
 
 //receive_articles();
@@ -82,15 +106,14 @@ app.post('/create-checkout-session', async(req, res) => {
 
     console.log("La session checkout à reçu le panier !");
     console.log(cartData);
-    
+    console.log("type après envoie: " + typeof cartData);
         var session = await stripe.checkout.sessions.create({
-            line_items: [
-                //await createLineItem(cartData)
-                {
+            line_items: createLineItem(cartData),
+                /*{
                     price: process.env.PRICE_ID,
                     quantity: 1,
-                },
-            ],
+                },*/
+            
             mode: 'payment',
             success_url: `http://localhost:${port}/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `http://localhost:${port}/error`,
