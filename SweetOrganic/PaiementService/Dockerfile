@@ -16,8 +16,8 @@ COPY . .
 
 RUN npm install
 
-ENV PORT=3001
-EXPOSE 3001
+ENV PORT=3002
+EXPOSE 3002
 #ARG DOCKER = 'true'
 # Start server command
 CMD [ "npm", "start" ]

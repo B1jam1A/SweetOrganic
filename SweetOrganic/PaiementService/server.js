@@ -77,11 +77,19 @@ app.get('/success', async (req, res) => {
     }
 
     //Affiche la page de confirmation de paiement
-    res.render('success', {session});
+    //res.render('success', {session});
+    //res.send({session});
+
+    // Construire l'URL complète de redirection
+    const redirectURL = `http://localhost:4000/success?session_id=${session_id}`;
+
+    // Rediriger l'utilisateur vers l'URL de succès sur le port 4000
+    res.redirect(redirectURL);
+
 });
 
 app.get('/checkout', async(req, res) => {
-    res.render('payment');
+    res.send({title: 'Checkout'});
 });
 
 //Start the server

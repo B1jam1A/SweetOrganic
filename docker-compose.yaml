@@ -23,7 +23,7 @@ services:
     build: 
       context: ./SweetOrganic/CartService
     ports:
-      - '3000:3000'
+      - '3001:3000'
     volumes:
       - .:/code
     depends_on:
@@ -44,7 +44,7 @@ services:
     image: mongo
     container_name: cart_mongodb
     ports:
-      - '27018:27017'
+      - '27019:27017'
     networks:
       - cart_database
     healthcheck:
@@ -63,7 +63,7 @@ services:
     build: 
       context: ./SweetOrganic/PaiementService
     ports:
-      - '3001:3000'
+      - '3002:3000'
     volumes:
       - .:/code
     depends_on:
@@ -84,7 +84,7 @@ services:
     image: mongo
     container_name: payment_mongodb
     ports:
-      - '27019:27017'
+      - '27020:27017'
     networks:
       - payment_database
     healthcheck:
