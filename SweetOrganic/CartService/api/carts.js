@@ -7,7 +7,7 @@ var {sendToPayment} = require('../config/publisher');
 
 //Renvoie le prix d'un article
 function getArticlePrice(article){
-  return article.price * article.qty;
+  return article.price * article.quantity;
 }
 
 //Renvoie le prix total du panier
@@ -33,6 +33,7 @@ async function isAdmin(req, res, next) {
 
 //Middleware vérifie si le panier appartient bieen à l'utilisateur
 async function verifyCart(req, res, next){
+  
   //Récupère le panier
   const cart_id = req.params.cart_id;
 
@@ -49,10 +50,43 @@ async function verifyCart(req, res, next){
   }
 }
 
+function prepareMsg(cart){
+  let message = []
+  for(let i=0; i<cart.articlesList.length; i++){
+    let simpleArticle = 
+    {
+        article_name: cart.articlesList[i].name,
+        price_id: cart.articlesList[i].price_id,
+        quantity: cart.articlesList[i].quantity,
+    };
+    message.push(simpleArticle);
+  }
 
-router.post('/init-checkout', async function(req, res) {
+  return message;
+}
+
+
+router.get('/init-checkout',authentification,  async function(req, res) {
   console.log("Préparation du panier");
-  await sendToPayment();
+
+
+  //Récupère le panier
+  const temp_cart = await Cart.find({ user_id: req.decodedToken._id}); //Tableau panier 
+  var cart = temp_cart[0];
+
+  
+  //console.log(cart);
+  //Regarde si le tableau est vide
+  if(!cart){
+    res.redirect('http://localhost:4000/Cart');
+  }
+
+  console.log("Panier trouvé !");
+
+  const message = prepareMsg(cart);
+
+  console.log('message : '+ message);
+  await sendToPayment(message);
   // Construire l'URL complète de redirection
   const redirectURL = `http://localhost:4000/checkout`;
 
@@ -137,8 +171,10 @@ router.post('/allCarts/:cart_id/articles', authentification, verifyCart, async f
     //Nouvelle article
     const newArticle = {
       idArticle: req.body.idArticle,
-      qty: req.body.qty,
+      name: req.body.name,
+      quantity: req.body.quantity,
       price: req.body.price,
+      price_id: req.body.price_id,
     };
 
     //Recherchez le panier par son ID (carID)
@@ -150,11 +186,11 @@ router.post('/allCarts/:cart_id/articles', authentification, verifyCart, async f
 
     //Ajoutez le nouvel article au tableau d'articles du panier ou met à jour la quantité
     if (existingArticle){
-      var newQty = parseInt(existingArticle.qty) + parseInt(newArticle.qty)
+      var newQty = parseInt(existingArticle.quantity) + parseInt(newArticle.quantity)
       if(newQty > 100){
         return res.status(422).json({message: 'La quantité dépasse la limite autorisé !'});
       }else {
-        existingArticle.qty = newQty
+        existingArticle.quantity = newQty
       }
     }else{
       cart.articlesList.push(newArticle);
@@ -174,7 +210,7 @@ router.put('/allCarts/:cart_id/articles/:article_id', authentification, verifyCa
   try{
     const cart_id = req.params.cart_id;
     const article_id = req.params.article_id;
-    const newQty = req.body.qty;
+    const newQty = req.body.quantity;
 
     //Recherche le panier à partir de son ID (cart_id)
     const cart = await Cart.findByIdAndUpdate(cart_id);
@@ -189,7 +225,7 @@ router.put('/allCarts/:cart_id/articles/:article_id', authentification, verifyCa
       return res.status(422).json({message: 'La quantité dépasse la limite autorisé !'});
     }
     //Nouvelle quantité
-    article.qty = newQty;
+    article.quantity = newQty;
 
     await cart.save();
     res.json({message: 'Quantité de l\'article mise à jour avec succès !'});

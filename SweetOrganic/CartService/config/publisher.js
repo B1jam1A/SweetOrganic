@@ -122,12 +122,12 @@ const q = "payment"
 
 }*/
 
-async function sendToPayment(){
+async function sendToPayment(message){
     try{
         const connection = await amqp.connect('amqp://rabbitmq:5672');
         const channel = await connection.createChannel();
         const result = await channel.assertQueue('payment');
-        const message = [
+        /*let message = [
             {
                 article_name: 'article_3',
                 price_id: 'price_1O7i0iLisy8csVQhhcK7G8Lp',
@@ -138,7 +138,7 @@ async function sendToPayment(){
                 price_id: 'price_1O7agNLisy8csVQh7EdPL56M',
                 quantity: 2,
             },
-        ];
+        ];*/
 
         console.log("type avant envoie : "+ typeof message);
         channel.sendToQueue('payment', Buffer.from(JSON.stringify(message)));
