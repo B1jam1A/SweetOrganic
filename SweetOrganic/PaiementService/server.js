@@ -5,10 +5,55 @@ const connectToDb = require('./config/paymentDB');
 const Payment = require('./service/models/paymentModel')
 const dotenv = require('dotenv');
 const {createPrice, createLineItem} = require('./service/controllers/stripeController');
+//const receive_articles = require('./config/consumer');
+const { Console } = require('console');
+
+
 dotenv.config();
 
 //Connect to the MongoDB
 connectToDb();
+//receive_articles();
+
+
+const amqp = require('amqp-connection-manager');
+const { resolve } = require('path');
+//const { channel } = require('diagnostics_channel');
+
+const q = 'payment';
+const receive_articles = async () => {
+    //Utilisation des promises pour attendre que la file d'attente soit consommée et renvoyer les données une fois dispo
+    return new Promise( async (resolve, reject) => {
+        const connection = amqp.connect('amqp://rabbitmq:5672');
+
+        try{
+            let channel = connection.createChannel({
+                json: true,
+                setup: ch =>{
+                    return ch.assertQueue(q, { durable: true});
+                }
+            });
+        
+            console.log(" [*] Waiting for messages in %s.", q);
+            await channel.consume(q, (message) => {
+                console.log(" [*] Parsing des données...");
+                const cartData = JSON.parse(message.content.toString());
+                console.log(message.content.toString());
+                resolve(cartData);
+            }, { noAck: true, exclusive: false});
+
+            console.log(" [*] Donner techniquement reçu.");
+            //channel.close();
+            
+        }catch (error) {
+            reject(error);
+        }
+
+        //connection.close();
+    });
+};
+
+//receive_articles();
 
 //Library Stripe
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -32,9 +77,15 @@ app.set('view engine', 'pug');
 //Creation d'une session avec Stripe
 app.post('/create-checkout-session', async(req, res) => {
     try{
+    //const cartData = await receive_articles();
+
+
+    console.log("La session checkout à reçu le panier !");
+    console.log(cartData);
+    
         var session = await stripe.checkout.sessions.create({
             line_items: [
-                //createLineItem(req.body.cart)
+                //await createLineItem(cartData)
                 {
                     price: process.env.PRICE_ID,
                     quantity: 1,
@@ -51,6 +102,8 @@ app.post('/create-checkout-session', async(req, res) => {
     console.log("Sessions status : "+ session.status);
     console.log("Redirection vers une nouvelle page...");
     res.redirect(303, session.url);
+
+    //receive_articles(req, res);
 });
 
 

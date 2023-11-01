@@ -1,7 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var Cart = require ('../service/models/cartModel');
-const {authentification} = require('./verifyToken')
+const {authentification} = require('./verifyToken');
+var {sendToPayment} = require('../config/publisher');
+
 
 //Renvoie le prix d'un article
 function getArticlePrice(article){
@@ -47,6 +49,16 @@ async function verifyCart(req, res, next){
   }
 }
 
+
+router.post('/init-checkout', async function(req, res) {
+  console.log("Préparation du panier");
+  await sendToPayment();
+  // Construire l'URL complète de redirection
+  const redirectURL = `http://localhost:4000/checkout`;
+
+  // Rediriger l'utilisateur vers l'URL de succès sur le port 4000
+  res.redirect(redirectURL);
+});
 
 /* GET cart page. */
 router.get('/', authentification, async function(req, res, next) {

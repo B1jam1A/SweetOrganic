@@ -6,7 +6,6 @@ if(process.env.HOSTNAME){var amqpUrl = process.env.MONGODB_URL_DOCKER;}
 else {var amqpUrl = process.env.MONGODB_URL;}
 
 async function receiveMessage(){
- 
      
     console.log("Docker host : " + process.env.DOCKER_HOST);
     console.log("url " +amqpUrl);

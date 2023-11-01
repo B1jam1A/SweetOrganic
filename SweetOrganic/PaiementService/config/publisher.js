@@ -2,41 +2,24 @@
 
 //Connect to message brocker Rabbitmq
 
-const amqp = require('amqplib');
+const amqp = require('amqp-connection-manager');
 
-//Fonction test pour envoyé un message
-async function sendMessage(){
+const q = "payment"
+const publishmsg = async() => {
+    const connection = amqp.connect('amqp://rabbitmq:5672');
 
-    //Créez une connection à RabbitMQ
-    const connection = await amqp.connect("amqp://127.0.0.1:5672");
-
-    //Creez une file d'attente
-    const channel = await connection.createChannel();
-
-    //Queue name
-    var queue = "cart";
-
-    //Message
-    const message = {
-        user: 'Jhonny',
-        productId: 123,
-        quantity: 1,
-    };
-
-    await channel.assertQueue(queue, {
-        durable: true
+    let channel = connection.createChannel({
+        json: true,
+        setup: ch =>{
+            return ch.assertQueue(q, { durable: true});
+        }
     });
 
-    //Envoie du message
-    await channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)));
-    console.log(" [x] Sent %s", message);
-
-    //Stop la connection
-    setTimeout(function(){
-        connection.close();
-        process.exit(0);
+    console.log("Starting publishing");
+    setInterval(async() => {
+        await channel.sendToQueue(q, { value: Math.random() });
     }, 500);
 
 }
 
-sendMessage();
+publishmsg();

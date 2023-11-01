@@ -8,7 +8,7 @@ async function createPrice(product){
 }
 
 // Créez une liste d'item avec leurs price_id et la quantité
-async function createLineItem(cart){
+/*async function createLineItem(cart){
     var line_items = []
     for(let i = 0; i < cart.articlesList.length; i++){
         var article = cart.articlesList[i];
@@ -16,6 +16,22 @@ async function createLineItem(cart){
             {
                 price: article.price_id,
                 quantity: article.qty,
+            }
+        );
+    }
+    return line_items;
+}*/
+
+
+async function createLineItem(cartData){
+    console.log("Traiement des items en cours ...");
+    var line_items = []
+    for(let i = 0; i < cartData.length; i++){
+        let article = cartData[i];
+        line_items.push(
+            {
+                price: article.price_id,
+                quantity: article.quantity,
             }
         );
     }

@@ -3,7 +3,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var Cart = require('./service/models/cartModel');
-var amqp = require('amqplib/callback_api');
+//var amqp = require('amqplib/callback_api');
 const connectToDb = require('./config/cartsDB');
 const connectToMsgBroker = require('./config/consumer')
 var path = require('path');
@@ -20,6 +20,8 @@ connectToDb();
 
 //Create our Express application
 var app = express(); 
+
+
 
 
 // view engine setup

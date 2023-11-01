@@ -1,8 +1,8 @@
-#!/usr/bin/env node
-
+//const amqp = require('amqplib');
+const amqp = require('amqp-connection-manager');
 //Connect to message brocker Rabbitmq
-
-const amqp = require('amqplib');
+if(process.env.HOSTNAME){var amqpUrl = process.env.MONGODB_URL_DOCKER;}
+else {var amqpUrl = process.env.MONGODB_URL;}
 
 //Fonction test pour envoyé un message
 async function sendMessage(){
@@ -39,4 +39,86 @@ async function sendMessage(){
 
 }
 
-sendMessage();
+
+//Fonction pour envoyé un message pour le paiement
+/*async function sendMessage_Payment(){
+
+    //Créez une connection à RabbitMQ
+    const connection = await amqp.connect(amqpUrl);
+
+    //Creez une file d'attente
+    const channel = await connection.createChannel();
+
+    //Queue name
+    var queue = "payment";
+
+    //Message
+    const message = [
+        {
+            article_name: 'article_1',
+            price_id: 'price_1O5vVULisy8csVQhwH5UfipG',
+            quantity: 4,
+        },
+
+        {
+            article_name: 'article_2',
+            price_id: 'price_1O7agNLisy8csVQh7EdPL56M',
+            quantity: 2,
+        },
+    ];
+
+    await channel.assertQueue(queue, {
+        durable: true
+    });
+
+    //Envoie du message
+    await channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)));
+    console.log(" [x] Sent %s", message);
+
+    //Stop la connection
+    setTimeout(function(){
+        connection.close();
+        process.exit(0);
+    }, 500);
+
+}*/
+
+
+
+
+
+const q = "payment"
+const sendToPayment = async() => {
+    const connection = amqp.connect('amqp://rabbitmq:5672');
+
+    let channel = connection.createChannel({
+        json: true,
+        setup: ch =>{
+            return ch.assertQueue(q, { durable: true});
+        }
+    });
+
+    console.log("Send to payment.");
+    
+    const message = [
+        {
+            article_name: 'article_1',
+            price_id: 'price_1O5vVULisy8csVQhwH5UfipG',
+            quantity: 4,
+        },
+
+        {
+            article_name: 'article_2',
+            price_id: 'price_1O7agNLisy8csVQh7EdPL56M',
+            quantity: 2,
+        },
+    ];
+
+    await channel.sendToQueue(q, JSON.stringify(message));
+    console.log("Message envoie à payment");
+    //channel.close();
+    //connection.close();
+
+}
+
+module.exports.sendToPayment = sendToPayment;
