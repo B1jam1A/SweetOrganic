@@ -28,7 +28,7 @@ async function connectToMQ(){
         const connection = await amqp.connect(process.env.MQ_CONNECT);
         const channel = await connection.createChannel();
         const result = await channel.assertQueue('jobs');
-        channel.sendToQueue('jobs', Buffer.from("OK"))
+        channel.sendToQueue('jobs', Buffer.from("Un message a été envoyé depuis le MS Produit"))
 
     }catch(error){
         console.log(error);
