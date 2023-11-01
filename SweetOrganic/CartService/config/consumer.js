@@ -2,8 +2,8 @@ const amqp = require("amqplib");
 const dotenv = require('dotenv');
 dotenv.config();
 
-const isDocker = process.env.DOCKER === "true";
-const amqpUrl = isDocker ? process.env.AMQ_URL_DOCKER : process.env.AMQ_URL;
+if(process.env.HOSTNAME){var amqpUrl = process.env.MONGODB_URL_DOCKER;}
+else {var amqpUrl = process.env.MONGODB_URL;}
 
 async function receiveMessage(){
  

@@ -2,8 +2,9 @@ const mongoose = require("mongoose");
 const dotenv = require('dotenv');
 dotenv.config();
 
-const isDocker = process.env.DOCKER === "true";
-const dbUrl = isDocker ? process.env.MONGODB_URL_DOCKER : process.env.MONGODB_URL ;
+if(process.env.HOSTNAME){var dbUrl = process.env.MONGODB_URL_DOCKER;}
+else {var dbUrl = process.env.MONGODB_URL;}
+
 console.log("dbUrl = "+dbUrl)
 
 async function connectToDb() {

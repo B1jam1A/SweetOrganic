@@ -21,12 +21,6 @@ connectToDb();
 //Create our Express application
 var app = express(); 
 
-//Session utilisateur
-app.use(session({
-    secret: 'votre_clé_secrète',
-    resave: false,
-    saveUninitialized: false
-  }));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,19 +33,6 @@ app.use(bodyParser.urlencoded({
 
 //Create our Express router
 var router = require('./api/carts');
-
-// Middleware pour vérifier l'état de l'utilisateur
-function checkUserLoggedIn(req, res, next) {
-    if (req.session.userId) {
-        // L'utilisateur est connecté, passez à la suite
-        next();
-    } else {
-        // L'utilisateur n'est pas connecté, redirigez-le vers une page de connexion
-        //res.redirect('/connexion'); // Personnalisez l'URL de connexion
-
-        res.json({message: "Vous n'êtes connecté"});
-    }
-}
 
 //Register all our routes with /api
 app.use('/Cart', router);
