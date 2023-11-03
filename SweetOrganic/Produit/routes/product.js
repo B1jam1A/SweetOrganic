@@ -1,8 +1,32 @@
 const router = require('express').Router();
 const Product = require('../model/Product');
 const {authentification} = require('./verifyToken');
+const amqp = require('amqplib');
 
+async function addCartToMQ(product) {
+    try {
+        const connection = await amqp.connect(process.env.MQ_CONNECT);
+        const channel = await connection.createChannel();
+        const queue = 'ajouterPanier';
 
+        const message = {
+            idProduit: product._id.toString(),
+            nom: product.nom,
+            prix: product.prix.toString(),
+            price_id: product.price_id || ""
+        };
+
+        const messageBuffer = Buffer.from(JSON.stringify(message));
+
+        await channel.assertQueue(queue, { durable: false });
+        channel.sendToQueue(queue, messageBuffer);
+
+        console.log("Product added to cart and sent to RabbitMQ:", message);
+
+    } catch (error) {
+        console.error("Error adding product to cart and sending to RabbitMQ:", error);
+    }
+}
 
 
 //Visualiser Produits
@@ -146,11 +170,26 @@ router.delete('/:id', authentification, async (req, res) => {
 });
 
 
+router.post('/addCart', async (req, res) => {
+    try {
+        const productId = req.body.idProduit;
+        const product = await Product.findById(productId);
 
+        if (!product) {
+            return res.status(404).send('Product not found.');
+        }
 
+        // Envoyer le produit à RabbitMQ en utilisant la fonction addCartToMQ
+        await addCartToMQ(product);
 
+        res.json({ message: 'Product added to cart and sent to RabbitMQ successfully!' });
 
-//
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("An error occurred.");
+    }
+});
+
 
 
 

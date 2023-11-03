@@ -53,6 +53,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         enum: ['actif', 'inactif'],
         default: 'actif'
+    },
+    price_id: {
+        type: String,
+        required: false
     }
 });
 

@@ -26,23 +26,7 @@ async function connectToDb() {
 connectToDb();
 
 
-async function connectToMQ(){
-    try{
-        const connection = await amqp.connect(process.env.MQ_CONNECT);
-        const channel = await connection.createChannel();
-        const result = await channel.assertQueue('jobs');
-        
-        channel.consume("jobs", message => {
-            console.log(message.content.toString());
-        })
-        console.log("waiting message");
 
-
-    }catch(error){
-        console.log(error);
-    }
-}
-connectToMQ()
 
 
 //Middleware

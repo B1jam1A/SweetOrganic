@@ -94,7 +94,6 @@ const customerSchema = new mongoose.Schema({
     }]
 });
 
-//Créer et assigner un token à un utilisateur et l'enregistrer dans la base de données.
 customerSchema.methods.generateAuthTokenAndSaveCustomer = async function() {
     // Ajouter l'attribut user: "customer" au payload du token
     const payload = {
@@ -103,10 +102,16 @@ customerSchema.methods.generateAuthTokenAndSaveCustomer = async function() {
     };
 
     const authToken = jwt.sign(payload, process.env.TOKEN_SECRET);
-    this.authTokens.push({authToken});
+    this.authTokens.push({ authToken });
     await this.save();
-    return authToken;
+
+    // Return both authToken and the customer's _id
+    return {
+        authToken,
+        customerId: this._id.toString()
+    };
 }
+
 
 customerSchema.methods.toJSON = function(){
     const customer = this.toObject();

@@ -41,5 +41,5 @@ COPY . .
 EXPOSE 3000
 
 # Run the application.
-CMD ./wait-for-it.sh some-rabbit:5672 -t 30 -- npm start
+#CMD ./wait-for-it.sh some-rabbit:5672 -t 30 -- npm start
 

@@ -21,20 +21,40 @@ async function connectToDb() {
         console.error('Erreur lors de la connexion à la base de données:', error);
     }
 }
+
 connectToDb();
 
-async function connectToMQ(){
-    try{
+async function connectToMQ() {
+    try {
         const connection = await amqp.connect(process.env.MQ_CONNECT);
         const channel = await connection.createChannel();
-        const result = await channel.assertQueue('jobs');
-        channel.sendToQueue('jobs', Buffer.from("Un message a été envoyé depuis le MS Produit"))
 
-    }catch(error){
+        const queue = 'jobs';
+
+        // Exemple de message JSON
+        const message = {
+            msg: "Un message a été envoyé depuis le MS Produit",
+            timestamp: new Date().toISOString(),
+            // Ajoutez d'autres propriétés ici si nécessaire
+        };
+
+        // Convertir l'objet JSON en chaîne et ensuite en buffer
+        const messageBuffer = Buffer.from(JSON.stringify(message));
+
+        await channel.assertQueue(queue, { durable: true });
+        channel.sendToQueue(queue, messageBuffer);
+
+        console.log("Message sent:", message);
+
+    } catch (error) {
         console.log(error);
     }
 }
-connectToMQ()
+
+connectToMQ();
+
+
+
 
 //Middleware
 app.use(express.json());

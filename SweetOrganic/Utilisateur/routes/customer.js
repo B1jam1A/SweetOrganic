@@ -3,6 +3,72 @@ const Customer = require('../model/Customer');
 const {registerValidationCustomer, loginValidationCustomer} = require('../validationCustomer');
 const bcrypt = require('bcryptjs');
 const {authentificationCustomer}= require('./verifyToken');
+const amqp = require('amqplib');
+
+
+let lastReceivedMessage = null;
+async function connectToMQ() {
+    try {
+        const connection = await amqp.connect(process.env.MQ_CONNECT);
+        const channel = await connection.createChannel();
+        
+        const queue = 'jobs';
+        await channel.assertQueue(queue);
+
+        // Écoute des messages
+        channel.consume(queue, message => {
+            const messageContent = message.content.toString();
+            try {
+                const jsonMessage = JSON.parse(messageContent);
+                console.log("Received JSON Message:", jsonMessage);
+
+                // Stocker le dernier message reçu
+                lastReceivedMessage = jsonMessage;
+
+            } catch (parseError) {
+                console.error("Failed to parse JSON:", parseError);
+            }
+
+            // Acknowledge the message
+            channel.ack(message);
+
+        }, { noAck: false });
+
+        console.log("Waiting for messages...");
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+connectToMQ(); 
+
+
+async function createCartToMQ(idCustumer) {
+    try {
+        const connection = await amqp.connect(process.env.MQ_CONNECT);
+        const channel = await connection.createChannel();
+
+        const queue = 'creerPanier';
+
+        // // Exemple de message JSON
+        // const message = {
+        //     msg: "Un message a été envoyé depuis le MS Produit",
+        //     timestamp: new Date().toISOString(),
+        //     // Ajoutez d'autres propriétés ici si nécessaire
+        // };
+
+        // Convertir l'objet JSON en chaîne et ensuite en buffer
+        const messageBuffer = Buffer.from(idCustumer);
+
+        await channel.assertQueue(queue, { durable: true });
+        channel.sendToQueue(queue, messageBuffer);
+
+        console.log("Message sent:", idCustumer);
+
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 
 //S'inscrire
@@ -30,8 +96,9 @@ router.post('/register', async (req, res) => {
         adresses: req.body.adresses
     });
     try{
-        const authToken = await customer.generateAuthTokenAndSaveCustomer();
-        res.send({customer, authToken});
+        const result = await customer.generateAuthTokenAndSaveCustomer();
+        createCartToMQ(result.customerId);
+        res.send({customer, authToken: result.authToken});
     }catch(err){
         res.status(400).send(err);
 
@@ -53,7 +120,7 @@ router.post('/login', async (req, res) => {
 
     //Créer et assigner un token
     const authToken = await customer.generateAuthTokenAndSaveCustomer();
-    res.send({customer, authToken});
+    res.send({customer, authToken: result.authToken});
 })
 
 
@@ -85,10 +152,14 @@ router.post('/logout/all', authentificationCustomer, async (req, res) => {
 });
 
 
+
 //Profil Client
 router.get('/me', authentificationCustomer, async(req, res, next) =>{
     res.send(req.customer);
 });
+
+
+
 
 router.put('/me', authentificationCustomer, async (req, res) => {
     const customerId = req.customer.id
