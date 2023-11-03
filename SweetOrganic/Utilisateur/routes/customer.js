@@ -119,7 +119,7 @@ router.post('/login', async (req, res) => {
     if(!validPass) return res.status(400).send('Invalid password');
 
     //Créer et assigner un token
-    const authToken = await customer.generateAuthTokenAndSaveCustomer();
+    const result = await customer.generateAuthTokenAndSaveCustomer();
     res.send({customer, authToken: result.authToken});
 })
 

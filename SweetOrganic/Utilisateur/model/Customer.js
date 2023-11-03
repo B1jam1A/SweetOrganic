@@ -107,7 +107,7 @@ customerSchema.methods.generateAuthTokenAndSaveCustomer = async function() {
 
     // Return both authToken and the customer's _id
     return {
-        authToken,
+        authToken : authToken,
         customerId: this._id.toString()
     };
 }

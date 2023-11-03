@@ -4,12 +4,14 @@ services:
 
   # Configuration pour RabbitMQ
   rabbitmq:
-    container_name: some-rabbit
-    image: rabbitmq:3-management
+    container_name: rabbitmq
+    image: rabbitmq:3-management-alpine
     ports:
       - 15672:15672
       - 5672:5672
     restart: always
+    networks:
+      - msgbroker
 
   # Configuration pour Produit
   mongo_db_product:
@@ -20,6 +22,8 @@ services:
       - mongo_db_product:/data/db 
     ports:
       - 27026:27017
+    networks:
+      - prod_db_net
 
   app_product:
     container_name: Product_API
@@ -32,7 +36,10 @@ services:
       - rabbitmq
     env_file:
       - ./Produit/.env
-    command: ["./wait-for-it.sh", "some-rabbit:5672", "-t", "30", "--", "npm", "start"]
+    networks:
+      - prod_db_net
+      - msgbroker
+    #command: ["./wait-for-it.sh", "some-rabbit:5672", "-t", "30", "--", "npm", "start"]
 
   # Configuration pour Utilisateur
   mongo_db_user:
@@ -43,6 +50,8 @@ services:
       - mongo_db_user:/data/db 
     ports:
       - 27018:27017
+    networks:
+      - user_db_net
 
   app_user:
     container_name: User_API
@@ -55,8 +64,84 @@ services:
       - rabbitmq
     env_file:
       - ./Utilisateur/.env
-    command: ["./wait-for-it.sh", "some-rabbit:5672", "-t", "30", "--", "npm", "start"]
+    networks:
+      - user_db_net
+      - msgbroker
+    #command: ["./wait-for-it.sh", "some-rabbit:5672", "-t", "30", "--", "npm", "start"]
     
 volumes:
   mongo_db_product: {}
   mongo_db_user: {}
+
+#Réseaux
+networks:
+  msgbroker:
+    driver: bridge
+  user_db_net:
+    driver: bridge
+  prod_db_net:
+    driver: bridge
+    
+    
+# version: '3'
+
+# services:
+
+#   # Configuration pour RabbitMQ
+#   rabbitmq:
+#     container_name: some-rabbit
+#     image: rabbitmq:3-management
+#     ports:
+#       - 15672:15672
+#       - 5672:5672
+#     restart: always
+
+#   # Configuration pour Produit
+#   mongo_db_product:
+#     container_name: Product_DB
+#     image: mongo:latest
+#     restart: always
+#     volumes:
+#       - mongo_db_product:/data/db 
+#     ports:
+#       - 27026:27017
+
+#   app_product:
+#     container_name: Product_API
+#     build:
+#       context: ./Produit
+#     ports:
+#       - 3026:3000
+#     depends_on:
+#       - mongo_db_product
+#       - rabbitmq
+#     env_file:
+#       - ./Produit/.env
+
+#   # Configuration pour Utilisateur
+#   mongo_db_user:
+#     container_name: User_DB
+#     image: mongo:latest   
+#     restart: always
+#     volumes:
+#       - mongo_db_user:/data/db 
+#     ports:
+#       - 27018:27017
+
+#   app_user:
+#     container_name: User_API
+#     build:
+#       context: ./Utilisateur
+#     ports:
+#       - 3000:3000
+#     depends_on:
+#       - mongo_db_user
+#       - rabbitmq
+#     env_file:
+#       - ./Utilisateur/.env
+
+# volumes:
+#   mongo_db_product: {}
+#   mongo_db_user: {}
+
+
