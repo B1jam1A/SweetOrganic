@@ -51,7 +51,10 @@ async function verifyCart(req, res, next){
 }
 
 function prepareMsg(cart){
-  let message = []
+  let message = {
+    user_id: cart.user_id,
+    articlesList: []
+  }
   for(let i=0; i<cart.articlesList.length; i++){
     let simpleArticle = 
     {
@@ -59,14 +62,14 @@ function prepareMsg(cart){
         price_id: cart.articlesList[i].price_id,
         quantity: cart.articlesList[i].quantity,
     };
-    message.push(simpleArticle);
+    message.articlesList.push(simpleArticle);
   }
 
   return message;
 }
 
 
-router.get('/init-checkout',authentification,  async function(req, res) {
+router.get('/redirect-payment',authentification,  async function(req, res) {
   console.log("Préparation du panier");
 
 
@@ -78,7 +81,7 @@ router.get('/init-checkout',authentification,  async function(req, res) {
   //console.log(cart);
   //Regarde si le tableau est vide
   if(!cart){
-    res.redirect('http://localhost:4000/Cart');
+    return res.status(401).json({message: 'Votre panier est vide.'});
   }
 
   console.log("Panier trouvé !");
@@ -88,10 +91,10 @@ router.get('/init-checkout',authentification,  async function(req, res) {
   console.log('message : '+ message);
   await sendToPayment(message);
   // Construire l'URL complète de redirection
-  const redirectURL = `http://localhost:4000/checkout`;
+  //const redirectURL = `http://localhost:4000/checkout`;
 
   // Rediriger l'utilisateur vers l'URL de succès sur le port 4000
-  res.redirect(redirectURL);
+  res.status(200).json({message: 'Préparation de la commande.'});
 });
 
 /* GET cart page. */

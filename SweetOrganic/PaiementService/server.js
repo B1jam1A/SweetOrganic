@@ -6,8 +6,7 @@ const Payment = require('./service/models/paymentModel')
 const dotenv = require('dotenv');
 const {createPrice, createLineItem} = require('./service/controllers/stripeController');
 //const receive_articles = require('./config/consumer');
-const { Console } = require('console');
-
+const {authentification} = require('./api/verifyToken');
 
 dotenv.config();
 
@@ -99,7 +98,17 @@ app.use(bodyParser.urlencoded({
 app.set('view engine', 'pug');
 
 //Creation d'une session avec Stripe
-app.post('/create-checkout-session', async(req, res) => {
+app.post('/create-checkout-session', authentification, async(req, res) => {
+
+
+    const user_id = req.decodedToken._id;
+    
+    if(cartData.user_id !== user_id){
+        console.log("cartData.user_id: "+ cartData.user_id );
+        console.log("user_id: "+ user_id);
+        return res.status(403).send("Forbbiden request: Payment service refused");
+    }
+    console.log("Identifié : "+user_id);
     try{
     //const cartData = await receive_articles();
 
@@ -108,7 +117,7 @@ app.post('/create-checkout-session', async(req, res) => {
     console.log(cartData);
     console.log("type après envoie: " + typeof cartData);
         var session = await stripe.checkout.sessions.create({
-            line_items: createLineItem(cartData),
+            line_items: createLineItem(cartData.articlesList),
                 /*{
                     price: process.env.PRICE_ID,
                     quantity: 1,
@@ -121,11 +130,11 @@ app.post('/create-checkout-session', async(req, res) => {
     }catch(err){
         return res.send(err);
     }
-
+    console.log("session url: " + session.url)
     console.log("Sessions status : "+ session.status);
     console.log("Redirection vers une nouvelle page...");
-    res.redirect(303, session.url);
-
+    //res.status(303).redirect(session.url);
+    res.status(200).send({url: session.url});
     //receive_articles(req, res);
 });
 
@@ -134,7 +143,9 @@ app.get('/success', async (req, res) => {
     // Récupérez la l'indentifiant de la session depuis l'URL
     const session_id = req.query.session_id;
     const session = await stripe.checkout.sessions.retrieve(session_id);
-    
+    if(!session){
+        return res.status(403).send("Forbbiden request: Vous devez effectuer un paiment");
+    }
     console.log("Paiement status : "+ session.payment_status);
     //Si la transation a été un success, enregistre le payment dans la base de donnée
     if(session.payment_status === "paid"){
