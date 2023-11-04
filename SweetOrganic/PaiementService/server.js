@@ -30,9 +30,9 @@ async function connectToMQ(){
         
         channel.consume("payment", message => {
             const messageContent = message.content.toString();
+            console.log(messageContent);
             cartData = JSON.parse(messageContent);
-            console.log(message.content.toString());
-        })
+        });
         console.log("waiting message");
 
 

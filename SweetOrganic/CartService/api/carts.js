@@ -3,70 +3,40 @@ var router = express.Router();
 var Cart = require ('../service/models/cartModel');
 const {authentification} = require('./verifyToken');
 var {sendToPayment} = require('../config/publisher');
+const {getArticlePrice, getTotalPrice, addArticle, prepareMsg, isAdmin, verifyCart} = require('../service/controllers/cartsController');
+const amqp = require('amqplib');
+
+async function connectToMQ(){
+  try{
+      const connection = await amqp.connect('amqp://rabbitmq:5672');
+      const channel = await connection.createChannel();
+
+      await channel.assertQueue('creerPanier');
+      channel.consume("creerPanier", message => {
+          const messageContent = message.content.toString();
+          console.log(messageContent);
+          //cartData = JSON.parse(messageContent);
+      });
+
+      await channel.assertQueue('ajouterProduit');
+      channel.consume("ajouterProduit", async message => {
+        const messageContent = await message.content.toString();
+        console.log(messageContent);
+
+        //Ajout d'un article
+        const addProductData = await JSON.parse(messageContent);
+        await addArticle(addProductData.article, user_id);
+        console.log("Produit ajouté !");
+    });
+
+      console.log("waiting message");
 
 
-//Renvoie le prix d'un article
-function getArticlePrice(article){
-  return article.price * article.quantity;
-}
-
-//Renvoie le prix total du panier
-function getTotalPrice(articlesList){
-  var price = 0;
-  for(let i=0; i < articlesList.length; i++){
-    price += getArticlePrice(articlesList[i]);
-  }
-  return price;
-}
-
-//Fonction middleware vérification des droits admin
-async function isAdmin(req, res, next) {
-  // Vérifiez si l'utilisateur a le rôle "administrateur" ou d'autres autorisations nécessaires.
-  if (req.decodedToken.user === 'admin') {
-    // L'utilisateur est un administrateur, autorisez l'accès.
-    next();
-  } else {
-    // L'utilisateur n'a pas les autorisations requises, renvoyez une réponse d'erreur.
-    res.status(403).json({ message: 'Access Denied!' });
-  }
-}
-
-//Middleware vérifie si le panier appartient bieen à l'utilisateur
-async function verifyCart(req, res, next){
-  
-  //Récupère le panier
-  const cart_id = req.params.cart_id;
-
-  //Recherchez le panier par son ID (carID)
-  const cart = await Cart.findByIdAndUpdate(cart_id);
-  if(!cart){return res.status(404).json({message: 'Panier non trouvé'})};
-
-  //Vérifie les paniers
-  if (cart.user_id.toString() === req.decodedToken._id) {
-    next();
-  }
-  else {
-    res.status(403).json({ message: 'Access Denied!' });
+  }catch(error){
+      console.log(error);
   }
 }
-
-function prepareMsg(cart){
-  let message = {
-    user_id: cart.user_id,
-    articlesList: []
-  }
-  for(let i=0; i<cart.articlesList.length; i++){
-    let simpleArticle = 
-    {
-        article_name: cart.articlesList[i].name,
-        price_id: cart.articlesList[i].price_id,
-        quantity: cart.articlesList[i].quantity,
-    };
-    message.articlesList.push(simpleArticle);
-  }
-
-  return message;
-}
+connectToMQ();
 
 
 router.get('/redirect-payment',authentification,  async function(req, res) {
