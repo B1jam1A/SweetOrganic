@@ -5,6 +5,7 @@ const connectToDb = require('./config/paymentDB');
 const Payment = require('./service/models/paymentModel')
 const dotenv = require('dotenv');
 const {createPrice, createLineItem} = require('./service/controllers/stripeController');
+const {getTransactionsByUser, getTransactionById} = require('./service/controllers/paymentController');
 //const receive_articles = require('./config/consumer');
 const {authentification} = require('./api/verifyToken');
 
@@ -151,9 +152,9 @@ async function isAdmin(req, res, next) {
   }
 
 //Récupère toute les transactions d'un utilisateur
-app.getTransactions('/admin/transactions:user_id', authentification, isAdmin, async(req, res) => {
+app.get('/admin/transactions_user:user_id', authentification, isAdmin, async(req, res) => {
 
-    const transactions = await Payment.find({ user_id: req.decodedToken._id});
+    const transactions = getTransactionsByUser(req.decodedToken._id);
 
     if(!transactions){
         return res.status(404).json({message: "Aucun résultat trouvé."});
@@ -163,9 +164,9 @@ app.getTransactions('/admin/transactions:user_id', authentification, isAdmin, as
 });
 
 //Récupère une seul transaction
-app.getTransaction('/admin/transactions:_id', authentification, isAdmin, async(req, res) => {
+app.get('/admin/transaction:_id', authentification, isAdmin, async(req, res) => {
 
-    const transaction = await Payment.findById(req.params._id);
+    const transaction = getTransactionById(req.params._id);
 
     if(!transaction){
         return res.status(404).json({message: "Aucun résultat trouvé."});

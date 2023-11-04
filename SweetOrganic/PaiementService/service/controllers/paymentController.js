@@ -1,11 +1,18 @@
-const Payment = require ('./paymentModel');
+const Payment = require ('../models/paymentModel');
 
-const getPayment = async (req,res) => {
-    const payment = await Payment.findById(req.params.id);
-    res.send(payment);
+//Les transactions d'un utilisateur
+async function getTransactionsByUser(user_id){
+    const transactions = await Payment.find({user_id: user_id});
+    return transactions;
 }
 
-const getUserPayment = async (req,res) => {
-    const payment = await Payment.find(req.params.user_id);
-    res.send(payment);
+//Une seul transaction par son id
+async function getTransactionById(transaction_id){
+    const transaction = await Payment.findById({_id: transaction_id});
+    return transaction;
+}
+
+module.exports = {
+    getTransactionsByUser,
+    getTransactionById,
 }
