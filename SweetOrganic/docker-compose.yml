@@ -20,6 +20,7 @@ services:
     restart: always
     volumes:
       - mongo_db_product:/data/db 
+      - ./Produit/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     ports:
       - 27026:27017
     networks:
@@ -48,6 +49,7 @@ services:
     restart: always
     volumes:
       - mongo_db_user:/data/db 
+      - ./Utilisateur/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     ports:
       - 27018:27017
     networks:
