@@ -5,9 +5,10 @@ const amqp = require('amqplib');
 
 
 // Route POST pour ajouter un avis
-app.post('/', (req, res) => {
+router.post('/', authentification, (req, res) => {
+    client_id = req._id
     // Récupère les données de la requête
-    const { client_id, produit_id, notation, commentaire } = req.body;
+    const {produit_id, notation, commentaire } = req.body;
 
     // Crée une nouvelle instance de l'avis avec ces données
     const newReview = new Review({
@@ -29,7 +30,7 @@ app.post('/', (req, res) => {
 
 
 // Route DELETE pour supprimer un avis
-app.delete('/:id', authentification, (req, res) => {
+router.delete('/:id', authentification, (req, res) => {
     if (req.user !== 'admin') {
         return res.status(403).send('Access denied. Only administrators can add products.');
     }
@@ -49,13 +50,13 @@ app.delete('/:id', authentification, (req, res) => {
 });
 
 // Route GET pour récupérer tous les commentaires d'un produit spécifique
-app.get('/product/all', authentification, (req, res) => {
+router.get('/product/:id', authentification, (req, res) => {
 
     if (req.user !== 'admin') {
         return res.status(403).send('Access denied. Only administrators can add products.');
     }
 
-    const productId = req.params.product_id;
+    const productId = req.params.id;
 
     // Recherchez tous les avis associés à ce produit
     Review.find({ produit_id: productId })

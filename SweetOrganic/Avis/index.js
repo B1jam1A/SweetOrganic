@@ -22,7 +22,7 @@ async function connectToDb() {
     }
 }
 
-
+connectToDb()
 
 
 //Middleware

@@ -21,7 +21,7 @@ async function addCartToMQ(product, userId) {
 
         const messageBuffer = Buffer.from(JSON.stringify(message));
 
-        await channel.assertQueue(queue, { durable: false });
+        await channel.assertQueue(queue, { durable: true });
         channel.sendToQueue(queue, messageBuffer);
 
         console.log("Product added to cart and sent to RabbitMQ:", message);
@@ -30,6 +30,80 @@ async function addCartToMQ(product, userId) {
         console.error("Error adding product to cart and sending to RabbitMQ:", error);
     }
 }
+
+async function sendProductForPriceId(product) {
+    try {
+        const connection = await amqp.connect(process.env.MQ_CONNECT);
+        const channel = await connection.createChannel();
+        const queue = 'getPriceId';
+
+        const message = {
+            idProduit: product._id.toString(),
+            prix: product.prix.toString(),
+        };
+
+        const messageBuffer = Buffer.from(JSON.stringify(message));
+
+        await channel.assertQueue(queue, { durable: true });
+        channel.sendToQueue(queue, messageBuffer);
+
+        console.log("Product id and price send to RabbitMQ:", message);
+
+    } catch (error) {
+        console.error("Error adding product to cart and sending to RabbitMQ:", error);
+    }
+
+
+}
+
+
+async function receivedPriceIDFromMQ() {
+    try {
+        const connection = await amqp.connect(process.env.MQ_CONNECT);
+        const channel = await connection.createChannel();
+        
+        const queue = 'senPriceID';
+        await channel.assertQueue(queue);
+
+        // Écoute des messages
+        channel.consume(queue, async message => {
+            const messageContent = message.content.toString();
+            try {
+                const jsonMessage = JSON.parse(messageContent);
+                console.log("Received JSON Message:", jsonMessage);
+
+                const updateResult = await Product.updateOne(
+                    { _id: jsonMessage.idProduit },
+                    { $set: { price_id: jsonMessage.price_id } }
+                );
+                if (updateResult.nModified > 0) {
+                    console.log(`Product with id ${jsonMessage.idProduit} has been updated with price_id: ${jsonMessage.price_id}`);
+                } else {
+                    console.warn(`No product found with id ${jsonMessage.idProduit}`);
+                }
+
+            } catch (parseError) {
+                console.error("Failed to parse JSON:", parseError);
+            }
+
+            // Acknowledge the message
+            channel.ack(message);
+
+        }, { noAck: false });
+
+        console.log("Waiting for messages price_id from RabbitMQ...");
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+receivedPriceIDFromMQ(); 
+
+
+
+
+
 
 
 //Visualiser Produits
@@ -96,11 +170,16 @@ router.post('/', authentification, async (req, res) => {
             return res.status(403).send('Access denied. Only administrators can add products.');
         }
 
+
+
         // Créez un nouveau produit en utilisant le modèle Mongoose et les données fournies dans req.body
         const product= new Product(req.body);
 
         // Sauvegardez le produit dans la base de données
         await product.save();
+
+        // Envoyer le produit à RabbitMQ en utilisant la fonction sendProductForPriceId
+        await sendProductForPriceId(product);
 
         // Renvoyez le produit nouvellement créé en réponse
         res.json(product);
