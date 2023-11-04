@@ -13,11 +13,16 @@ async function getTransactionById(transaction_id){
 }
 
 async function createPriceIdMessage(idProduit, price_id){
-    return {
-        idProduit: idProduit,
-        price_id: price_id
+    console.log("idProduit :"+idProduit);
+    console.log("price_id :"+price_id);
+    if(price_id){
+        return {
+            idProduit: idProduit,
+            price_id: price_id
+        }
     }
 }
+
 
 module.exports = {
     getTransactionsByUser,

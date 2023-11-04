@@ -10,6 +10,8 @@ const {authentification} = require('./api/verifyToken');
 const {sendPriceId} = require('./config/publisher');
 dotenv.config();
 const amqp = require('amqplib');
+//Library Stripe
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 //Connect to the MongoDB
 connectToDb();
@@ -35,17 +37,26 @@ async function connectToMQ(){
         });
         
         await channel.assertQueue('getPriceID');
-        channel.consume("getPriceID", message => {
+        channel.consume("getPriceID", async message => {
             const messageContent = message.content.toString();
             console.log(messageContent);
-            //Parse le message
-            const product = JSON.parse(messageContent);
+            
             //Creer un price_id
-            const price_id = createPrice(product);
-            //Envoie du messsage
-            const idProduit = product.idProduit;
-            sendPriceId(createPriceIdMessage(idProduit, price_id));
-        })
+            try{
+                //Parse le message
+                const product = JSON.parse(messageContent);
+                await createPrice(product).then((price) => {
+                    //console.log('Prix créé avec succès :', price.id);
+                    createPriceIdMessage(product.idProduit, price.id).then((msg) => {
+                        //console.log("Message créé, prêt à l'envoie", msg);
+                        sendPriceId(msg);
+                    }).catch((err) => console.error('Erreur lors de la configuration du message :', err));
+                }).catch((err) => console.error("Erreur lors de la création du price_id :", err));
+            }catch(err){
+                console.error('Impossible de créer un price_id :',err);
+            }
+
+        });
 
         console.log("waiting message");
     }catch(error){
@@ -54,8 +65,6 @@ async function connectToMQ(){
 }
 connectToMQ();
 
-//Library Stripe
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
  
 //Create our Express application
 var app = express(); 
