@@ -35,11 +35,13 @@ async function sendProductForPriceId(product) {
     try {
         const connection = await amqp.connect(process.env.MQ_CONNECT);
         const channel = await connection.createChannel();
-        const queue = 'getPriceId';
+        const queue = 'getPriceID';
 
         const message = {
             idProduit: product._id.toString(),
+            nom: product.nom.toString(),
             prix: product.prix.toString(),
+
         };
 
         const messageBuffer = Buffer.from(JSON.stringify(message));
@@ -62,7 +64,7 @@ async function receivedPriceIDFromMQ() {
         const connection = await amqp.connect(process.env.MQ_CONNECT);
         const channel = await connection.createChannel();
         
-        const queue = 'senPriceID';
+        const queue = 'sendPriceID';
         await channel.assertQueue(queue);
 
         // Écoute des messages
