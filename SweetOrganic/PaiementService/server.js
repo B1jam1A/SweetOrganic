@@ -41,43 +41,6 @@ async function connectToMQ(){
 }
 connectToMQ();
 
-const q = 'payment';
-const receive_articles = async () => {
-    //Utilisation des promises pour attendre que la file d'attente soit consommée et renvoyer les données une fois dispo
-    /*return new Promise( async (resolve, reject) => {
-        const connection = amqp.connect('amqp://rabbitmq:5672');
-
-        try{
-            let channel = connection.createChannel({
-                json: true,
-                setup: ch =>{
-                    return ch.assertQueue(q, { durable: true});
-                }
-            });
-        
-            console.log(" [*] Waiting for messages in %s.", q);
-            await channel.consume(q, (message) => {
-                console.log(" [*] Parsing des données...");
-                const cartData = JSON.parse(message.content.toString());
-                console.log(message.content.toString());
-                resolve(cartData);
-            }, { noAck: true, exclusive: false});
-
-            console.log(" [*] Donner techniquement reçu.");
-            //channel.close();
-            
-        }catch (error) {
-            reject(error);
-        }
-
-        //connection.close();
-    });*/
-
-
-};
-
-//receive_articles();
-
 //Library Stripe
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
  
@@ -173,6 +136,42 @@ app.get('/success', async (req, res) => {
     // Rediriger l'utilisateur vers l'URL de succès sur le port 4000
     res.redirect(redirectURL);
 
+});
+
+//Fonction middleware vérification des droits admin
+async function isAdmin(req, res, next) {
+    // Vérifiez si l'utilisateur a le rôle "administrateur" ou d'autres autorisations nécessaires.
+    if (req.decodedToken.user === 'admin') {
+      // L'utilisateur est un administrateur, autorisez l'accès.
+      next();
+    } else {
+      // L'utilisateur n'a pas les autorisations requises, renvoyez une réponse d'erreur.
+      res.status(403).json({ message: 'Access Denied!' });
+    }
+  }
+
+//Récupère toute les transactions d'un utilisateur
+app.getTransactions('/admin/transactions:user_id', authentification, isAdmin, async(req, res) => {
+
+    const transactions = await Payment.find({ user_id: req.decodedToken._id});
+
+    if(!transactions){
+        return res.status(404).json({message: "Aucun résultat trouvé."});
+    }
+
+    res.status(200).send(transactions);
+});
+
+//Récupère une seul transaction
+app.getTransaction('/admin/transactions:_id', authentification, isAdmin, async(req, res) => {
+
+    const transaction = await Payment.findById(req.params._id);
+
+    if(!transaction){
+        return res.status(404).json({message: "Aucun résultat trouvé."});
+    }
+
+    res.status(200).send(transaction);
 });
 
 app.get('/checkout', async(req, res) => {
