@@ -103,6 +103,37 @@ async function receivedPriceIDFromMQ() {
 receivedPriceIDFromMQ(); 
 
 
+async function listenForReviews() {
+    const connection = await amqp.connect(process.env.MQ_CONNECT);
+    const channel = await connection.createChannel();
+    
+    const queue = 'gestionAvisId';
+    await channel.assertQueue(queue);
+
+    channel.consume(queue, async message => {
+        const msgContent = message.content.toString();
+        const { action, productId, reviewId } = JSON.parse(msgContent);
+        
+        const product = await Product.findById(productId);
+        if (!product) return;
+
+        if (action === 'addReview') {
+            if (!product.avisIds.includes(reviewId)) {
+                product.avisIds.push(reviewId);
+            }
+        } else if (action === 'removeReview') {
+            const index = product.avisIds.indexOf(reviewId);
+            if (index > -1) {
+                product.avisIds.splice(index, 1);
+            }
+        }
+
+        await product.save();
+        channel.ack(message);
+    });
+}
+
+listenForReviews();
 
 
 

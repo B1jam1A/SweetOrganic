@@ -584,6 +584,137 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "Afficher Image",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3026/images/guimauve-framboise.png",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3026",
+							"path": [
+								"images",
+								"guimauve-framboise.png"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Service avis",
+			"item": [
+				{
+					"name": "Client",
+					"item": [
+						{
+							"name": "Ajouter Avis",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Afficher Avis Produit",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3099/api/review/customer/product/6140a23fb32d45c67d8e3e15",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3099",
+									"path": [
+										"api",
+										"review",
+										"customer",
+										"product",
+										"6140a23fb32d45c67d8e3e15"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Administrateur",
+					"item": [
+						{
+							"name": "Supprimer Avis",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3099/api/review/654636caefaffa4a6b6145ef",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3099",
+									"path": [
+										"api",
+										"review",
+										"654636caefaffa4a6b6145ef"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Consulter Avis Produit",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3099/api/review/product/6140a23fb32d45c67d8e3e15",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3099",
+									"path": [
+										"api",
+										"review",
+										"product",
+										"6140a23fb32d45c67d8e3e15"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Consulter Avis Client",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3099/api/review/customer/65462e10c4461017201f334b",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3099",
+									"path": [
+										"api",
+										"review",
+										"customer",
+										"65462e10c4461017201f334b"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}
@@ -593,7 +724,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTNiZmFhNTNhN2ZmMmU0ZThhNGYwOTUiLCJ1c2VyIjoiYWRtaW4iLCJpYXQiOjE2OTg0Mjk2ODl9.XOU9ShtTDnrM8Rz6u_EPSnClbJ7uq7ZPxaK6lwIcvXA",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTQ2ODNiNWQ1OGM5ZDczZGQyZDQ5NjYiLCJ1c2VyIjoiY3VzdG9tZXIiLCJpYXQiOjE2OTkxMjAwNTN9.i6AGRJ02EcwU2RFiOES767XbXlrIs8bSmY3CuxdHXg8",
 				"type": "string"
 			}
 		]

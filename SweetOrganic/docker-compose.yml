@@ -70,10 +70,40 @@ services:
       - user_db_net
       - msgbroker
     #command: ["./wait-for-it.sh", "some-rabbit:5672", "-t", "30", "--", "npm", "start"]
+
+    # Configuration pour Avis
+  mongo_db_review:
+    container_name: Review_DB
+    image: mongo:latest   
+    restart: always
+    volumes:
+      - mongo_db_review:/data/db 
+    ports:
+      - 27099:27017
+    networks:
+      - review_db_net
+
+  app_review:
+    container_name: Review_API
+    build:
+      context: ./Avis
+    ports:
+      - 3099:3000
+    depends_on:
+      - mongo_db_review
+      - rabbitmq
+    env_file:
+      - ./Avis/.env
+    networks:
+      - review_db_net
+      - msgbroker
+    #command: ["./wait-for-it.sh", "some-rabbit:5672", "-t", "30", "--", "npm", "start"]
     
+
 volumes:
   mongo_db_product: {}
   mongo_db_user: {}
+  mongo_db_review: {}
 
 #Réseaux
 networks:
@@ -82,6 +112,8 @@ networks:
   user_db_net:
     driver: bridge
   prod_db_net:
+    driver: bridge
+  review_db_net:
     driver: bridge
     
     

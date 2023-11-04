@@ -54,7 +54,8 @@ async function connectToMQ() {
 connectToMQ();
 
 
-
+//Ajouter une route pour le dossier images
+app.use('/images', express.static('./images'));
 
 //Middleware
 app.use(express.json());
