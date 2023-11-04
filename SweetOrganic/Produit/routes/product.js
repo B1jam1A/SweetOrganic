@@ -3,17 +3,20 @@ const Product = require('../model/Product');
 const {authentification} = require('./verifyToken');
 const amqp = require('amqplib');
 
-async function addCartToMQ(product) {
+async function addCartToMQ(product, userId) {
     try {
         const connection = await amqp.connect(process.env.MQ_CONNECT);
         const channel = await connection.createChannel();
         const queue = 'ajouterPanier';
 
         const message = {
-            idProduit: product._id.toString(),
-            nom: product.nom,
-            prix: product.prix.toString(),
-            price_id: product.price_id || ""
+            user_id: userId,
+            article:{
+                idProduit: product._id.toString(),
+                nom: product.nom,
+                prix: product.prix.toString(),
+                price_id: product.price_id || "", 
+            }
         };
 
         const messageBuffer = Buffer.from(JSON.stringify(message));
@@ -170,17 +173,17 @@ router.delete('/:id', authentification, async (req, res) => {
 });
 
 
-router.post('/addCart', async (req, res) => {
+router.post('/addCart', authentification, async (req, res) => {
     try {
         const productId = req.body.idProduit;
         const product = await Product.findById(productId);
-
+        const user_id = req._id;
         if (!product) {
             return res.status(404).send('Product not found.');
         }
 
         // Envoyer le produit à RabbitMQ en utilisant la fonction addCartToMQ
-        await addCartToMQ(product);
+        await addCartToMQ(product, user_id);
 
         res.json({ message: 'Product added to cart and sent to RabbitMQ successfully!' });
 
