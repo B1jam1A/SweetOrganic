@@ -10,13 +10,11 @@ const {authentificationAdmin} = require('./verifyToken');
 
 //Se connecter
 router.post('/login', async (req, res) => {
-    console.log(req.body);
     const {error} = loginValidationAdmin(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
     //Vérifier que l'utilisateur est déjà dans la base de données
     const admin = await Admin.findOne({email: req.body.email});
-    console.log(admin.password);
     if(!admin) return res.status(400).send("Email is not found");
 
     //Les indentifiants sont correctes
