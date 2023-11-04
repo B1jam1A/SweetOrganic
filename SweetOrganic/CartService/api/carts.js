@@ -11,21 +11,21 @@ async function connectToMQ(){
       const connection = await amqp.connect('amqp://rabbitmq:5672');
       const channel = await connection.createChannel();
 
-      await channel.assertQueue('creerPanier');
+      /*await channel.assertQueue('creerPanier');
       channel.consume("creerPanier", message => {
           const messageContent = message.content.toString();
           console.log(messageContent);
           //cartData = JSON.parse(messageContent);
-      });
+      });*/
 
-      await channel.assertQueue('ajouterProduit');
-      channel.consume("ajouterProduit", async message => {
-        const messageContent = await message.content.toString();
+      await channel.assertQueue('ajouterPanier');
+      channel.consume("ajouterPanier", message => {
+        const messageContent = message.content.toString();
         console.log(messageContent);
 
         //Ajout d'un article
-        const addProductData = await JSON.parse(messageContent);
-        await addArticle(addProductData.article, user_id);
+        const addProductData = JSON.parse(messageContent);
+        addArticle(addProductData.article, addProductData.user_id);
         console.log("Produit ajouté !");
     });
 

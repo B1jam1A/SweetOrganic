@@ -36,19 +36,40 @@ function prepareMsg(cart){
 // Ajout d'un nouvelle article dans la base de donnée
 async function addArticle(article, user_id){
     try{
-        const cart = await Cart.find({user_id: user_id});
+        const cart = await Cart.findOne({user_id: user_id});
         
+        const newArticle = {
+            idArticle: article.idProduit,
+            name: article.nom,
+            quantity: 1,
+            price: article.prix,
+            price_id: article.price_id,
+        };
+
+
         if(!cart){
             console.log("Panier non trouvé");
             return;
         }
-    
+        console.log("////////////// article");
+        console.log("idArticle: "+ article.idProduit);
+        console.log("name: "+ article.nom);
+        console.log("price: "+ article.prix);
+        console.log("price_id: "+ article.price_id);
+
+
+        console.log("////////////// newArticle");
+        console.log("idArticle: "+ newArticle.idArticle);
+        console.log("name: "+ newArticle.name);
+        console.log("quantity: "+ newArticle.quantity);
+        console.log("price: "+ newArticle.price);
+        console.log("price_id: "+ newArticle.price_id);
         //Vérifie si l'article existe déjà dans le panier
-        const existingArticle = cart.articlesList.find((findArticle) => findArticle.idArticle === article.idArticle);
+        const existingArticle = cart.articlesList.find((findArticle) => findArticle.idArticle === newArticle.idArticle);
     
         //Ajoutez le nouvel article au tableau d'articles du panier ou met à jour la quantité
         if (existingArticle){
-            var newQty = parseInt(existingArticle.quantity) + parseInt(article.quantity)
+            var newQty = parseInt(existingArticle.quantity) + parseInt(newArticle.quantity)
             if(newQty > 100){
                 console.log("Limite d'article atteinte");
                 return;
@@ -56,7 +77,7 @@ async function addArticle(article, user_id){
                 existingArticle.quantity = newQty
             }
         }else{
-            cart.articlesList.push(article);
+            cart.articlesList.push(newArticle);
         }
     
         await cart.save();
