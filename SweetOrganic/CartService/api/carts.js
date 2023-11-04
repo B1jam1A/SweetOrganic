@@ -7,29 +7,21 @@ const {getArticlePrice, getTotalPrice, addArticle, prepareMsg, isAdmin, verifyCa
 const amqp = require('amqplib');
 
 async function connectToMQ(){
+  if(process.env.HOSTNAME){var amqpUrl = process.env.AMQ_URL_DOCKER;}
+  else {var amqpUrl = process.env.AMQ_URL;}
   try{
-      const connection = await amqp.connect('amqp://rabbitmq:5672');
+      const connection = await amqp.connect(amqpUrl);
       const channel = await connection.createChannel();
-
-      /*await channel.assertQueue('creerPanier');
-      channel.consume("creerPanier", message => {
-          const messageContent = message.content.toString();
-          console.log(messageContent);
-          //cartData = JSON.parse(messageContent);
-      });*/
 
       await channel.assertQueue('ajouterPanier');
       channel.consume("ajouterPanier", message => {
         const messageContent = message.content.toString();
-        console.log(messageContent);
+        //console.log(messageContent);
 
         //Ajout d'un article
         const addProductData = JSON.parse(messageContent);
         addArticle(addProductData.article, addProductData.user_id);
-        console.log("Produit ajouté !");
     });
-
-      console.log("waiting message");
 
 
   }catch(error){
@@ -40,28 +32,17 @@ connectToMQ();
 
 
 router.get('/redirect-payment',authentification,  async function(req, res) {
-  console.log("Préparation du panier");
-
 
   //Récupère le panier
   const temp_cart = await Cart.find({ user_id: req.decodedToken._id}); //Tableau panier 
   var cart = temp_cart[0];
 
-  
-  //console.log(cart);
   //Regarde si le tableau est vide
   if(!cart){
     return res.status(401).json({message: 'Votre panier est vide.'});
   }
-
-  console.log("Panier trouvé !");
-
   const message = prepareMsg(cart);
-
-  console.log('message : '+ message);
   await sendToPayment(message);
-  // Construire l'URL complète de redirection
-  //const redirectURL = `http://localhost:4000/checkout`;
 
   // Rediriger l'utilisateur vers l'URL de succès sur le port 4000
   res.status(200).json({message: 'Préparation de la commande.'});
@@ -70,14 +51,13 @@ router.get('/redirect-payment',authentification,  async function(req, res) {
 /* GET cart page. */
 router.get('/', authentification, async function(req, res, next) {
   try{
-    console.log("Récupère le panier");
+
     //Récupère le panier
     const temp_cart = await Cart.find({ user_id: req.decodedToken._id}); //Tableau panier 
     var cart = temp_cart[0];
 
     //Regarde si le tableau est vide
     if(!cart){
-      console.log("Aucun panier trouvé");
       let new_cart = new Cart();
       new_cart.user_id = req.decodedToken._id;
       cart = new_cart;
@@ -88,7 +68,6 @@ router.get('/', authentification, async function(req, res, next) {
     const articlesList = cart.articlesList;
 
     //Affiche la page panier avec les articles
-    //res.render('carts', { title: 'Mon panier', articlesList, getArticlePrice, getTotalPrice});
     var listArticlePrice = [];
     for(let i=0; i < articlesList.length; i++){
       listArticlePrice.push(getArticlePrice(articlesList[i]));
@@ -220,18 +199,14 @@ router.delete('/allCarts/:cart_id/articles/:article_id', authentification, verif
     const cart = await Cart.findById(cart_id);
     if(!cart){res.status(404).json({message: 'Panier non trouvé'})};
 
-    //console.log(`Panier : ${cart_id}\n`);
-
     //Recherche l'article dans le panier à partir de son id (article_id)
     const articleIndex = cart.articlesList.findIndex((article) => article._id == article_id);
-    //console.log("index article : " + articleIndex);
     if(articleIndex === -1){
       return res.status(404).json({message: 'Article non trouvé'});
     }
     
     //Supprimez l'article du tableau
     cart.articlesList.splice(articleIndex, 1);
-    //console.log("Supression réussi");
     
     await cart.save();
     res.json({message: "L'article à été supprimer avec succès !"});

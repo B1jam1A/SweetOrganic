@@ -2,24 +2,25 @@
 
 //Connect to message brocker Rabbitmq
 
-const amqp = require('amqp-connection-manager');
+const amqp = require('amqplib');
 
-const q = "payment"
-const publishmsg = async() => {
-    const connection = amqp.connect('amqp://rabbitmq:5672');
+if(process.env.HOSTNAME){var amqpUrl = process.env.AMQ_URL_DOCKER;}
+else {var amqpUrl = process.env.AMQ_URL;}
 
-    let channel = connection.createChannel({
-        json: true,
-        setup: ch =>{
-            return ch.assertQueue(q, { durable: true});
-        }
-    });
+async function sendPriceId(price_id){
+    try{
+        const connection = await amqp.connect(amqpUrl);
+        const channel = await connection.createChannel();
 
-    console.log("Starting publishing");
-    setInterval(async() => {
-        await channel.sendToQueue(q, { value: Math.random() });
-    }, 500);
+        await channel.assertQueue('sendPriceID');
+        channel.sendToQueue('sendPriceID', Buffer.from(JSON.stringify(price_id)));
+
+    }catch(error){
+        console.log(error);
+    }
 
 }
 
-publishmsg();
+module.exports = {
+    sendPriceId,
+}

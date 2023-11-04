@@ -5,37 +5,49 @@ const connectToDb = require('./config/paymentDB');
 const Payment = require('./service/models/paymentModel')
 const dotenv = require('dotenv');
 const {createPrice, createLineItem} = require('./service/controllers/stripeController');
-const {getTransactionsByUser, getTransactionById} = require('./service/controllers/paymentController');
-//const receive_articles = require('./config/consumer');
+const {getTransactionsByUser, getTransactionById, createPriceIdMessage} = require('./service/controllers/paymentController');
 const {authentification} = require('./api/verifyToken');
-
+const {sendPriceId} = require('./config/publisher');
 dotenv.config();
+const amqp = require('amqplib');
 
 //Connect to the MongoDB
 connectToDb();
-//receive_articles();
 
-const amqp = require('amqplib');
-//const amqp = require('amqp-connection-manager');
-const { resolve } = require('path');
-//const { channel } = require('diagnostics_channel');
-
+//Variables globales
 let cartData;
 
+
+
 async function connectToMQ(){
+    if(process.env.HOSTNAME){var amqpUrl = process.env.AMQ_URL_DOCKER;}
+    else {var amqpUrl = process.env.AMQ_URL;}
+
     try{
-        const connection = await amqp.connect('amqp://rabbitmq:5672');
+        const connection = await amqp.connect(amqpUrl);
         const channel = await connection.createChannel();
-        const result = await channel.assertQueue('payment');
-        
+
+        await channel.assertQueue('payment');
         channel.consume("payment", message => {
             const messageContent = message.content.toString();
             console.log(messageContent);
             cartData = JSON.parse(messageContent);
         });
+        
+        await channel.assertQueue('getPriceID');
+        channel.consume("getPriceID", message => {
+            const messageContent = message.content.toString();
+            console.log(messageContent);
+            //Parse le message
+            const product = JSON.parse(messageContent);
+            //Creer un price_id
+            const price_id = createPrice(product);
+            //Envoie du messsage
+            const idProduit = product.idProduit;
+            sendPriceId(createPriceIdMessage(idProduit, price_id));
+        })
+
         console.log("waiting message");
-
-
     }catch(error){
         console.log(error);
     }
@@ -51,7 +63,7 @@ var app = express();
 //Use environment defined port or 4242
 const port = process.env.PORT || 3000;
 const DOMAIN = `http://localhost:${port}`;
-console.log('DOMAINE = ' + DOMAIN);
+//console.log('DOMAINE = ' + DOMAIN);
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({
@@ -68,25 +80,12 @@ app.post('/create-checkout-session', authentification, async(req, res) => {
     const user_id = req.decodedToken._id;
     
     if(cartData.user_id !== user_id){
-        console.log("cartData.user_id: "+ cartData.user_id );
-        console.log("user_id: "+ user_id);
         return res.status(403).send("Forbbiden request: Payment service refused");
     }
-    console.log("Identifié : "+user_id);
+
     try{
-    //const cartData = await receive_articles();
-
-
-    console.log("La session checkout à reçu le panier !");
-    console.log(cartData);
-    console.log("type après envoie: " + typeof cartData);
         var session = await stripe.checkout.sessions.create({
             line_items: createLineItem(cartData.articlesList),
-                /*{
-                    price: process.env.PRICE_ID,
-                    quantity: 1,
-                },*/
-            
             mode: 'payment',
             success_url: `http://localhost:${port}/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `http://localhost:${port}/error`,
@@ -94,12 +93,7 @@ app.post('/create-checkout-session', authentification, async(req, res) => {
     }catch(err){
         return res.send(err);
     }
-    console.log("session url: " + session.url)
-    console.log("Sessions status : "+ session.status);
-    console.log("Redirection vers une nouvelle page...");
-    //res.status(303).redirect(session.url);
     res.status(200).send({url: session.url});
-    //receive_articles(req, res);
 });
 
 
@@ -110,7 +104,7 @@ app.get('/success', async (req, res) => {
     if(!session){
         return res.status(403).send("Forbbiden request: Vous devez effectuer un paiment");
     }
-    console.log("Paiement status : "+ session.payment_status);
+
     //Si la transation a été un success, enregistre le payment dans la base de donnée
     if(session.payment_status === "paid"){
         // Le paiement a été effectué avec succès
@@ -126,10 +120,6 @@ app.get('/success', async (req, res) => {
     } else {
         console.log("Paiement échoué.");
     }
-
-    //Affiche la page de confirmation de paiement
-    //res.render('success', {session});
-    //res.send({session});
 
     // Construire l'URL complète de redirection
     const redirectURL = `http://localhost:4000/success?session_id=${session_id}`;

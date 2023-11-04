@@ -12,7 +12,15 @@ async function getTransactionById(transaction_id){
     return transaction;
 }
 
+async function createPriceIdMessage(idProduit, price_id){
+    return {
+        idProduit: idProduit,
+        price_id: price_id
+    }
+}
+
 module.exports = {
     getTransactionsByUser,
     getTransactionById,
+    createPriceIdMessage,
 }

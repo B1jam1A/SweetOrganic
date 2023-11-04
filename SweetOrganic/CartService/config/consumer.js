@@ -2,12 +2,11 @@ const amqp = require("amqplib");
 const dotenv = require('dotenv');
 dotenv.config();
 
-if(process.env.HOSTNAME){var amqpUrl = process.env.MONGODB_URL_DOCKER;}
-else {var amqpUrl = process.env.MONGODB_URL;}
+if(process.env.HOSTNAME){var amqpUrl = process.env.AMQ_URL_DOCKER;}
+else {var amqpUrl = process.env.AMQ_URL;}
 
 async function receiveMessage(){
      
-    console.log("Docker host : " + process.env.DOCKER_HOST);
     console.log("url " +amqpUrl);
     //Créez une connection à RabbitMQ
     const connection = await amqp.connect(AMQ_URL_DOCKER);
