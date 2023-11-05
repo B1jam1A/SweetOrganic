@@ -1,0 +1,76 @@
+version: "3.7"
+services:
+#Rabbitmq Service
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - '5672:5672'
+        - '8080:15672'
+    volumes:
+        - ./rabbitmq/lib:/var/lib/rabbitmq
+    networks:
+      - msgbroker
+
+#Mongodb Cart Service
+  cart_mongodb:
+    image: mongo
+    container_name: cart_mongodb
+    ports:
+      - '27019:27017'
+    networks:
+      - cart_database
+    restart: always
+
+#Mongodb Payment Service
+  payment_mongodb:
+    image: mongo
+    container_name: payment_mongodb
+    ports:
+      - '27020:27017'
+    networks:
+      - payment_database
+    restart: always
+
+#Payment Service
+  payment_service:
+    container_name: payment_service
+    build: 
+      context: ./SweetOrganic/PaiementService
+    ports:
+      - '3002:3000'
+    volumes:
+      - .:/code
+    environment:
+      FLASK_DEBUG: "true"
+    env_file:
+      - ./SweetOrganic/PaiementService/.env
+    networks:
+    - msgbroker
+    - payment_database
+    
+#Cart Service
+  cart_service:
+    container_name: cart_service
+    build: 
+      context: ./SweetOrganic/CartService
+    ports:
+      - '3001:3000'
+    volumes:
+      - .:/code
+    environment:
+      FLASK_DEBUG: "true"
+    env_file:
+      - ./SweetOrganic/CartService/.env
+    networks:
+    - msgbroker
+    - cart_database
+
+#Réseaux
+networks:
+  msgbroker:
+    driver: bridge
+  cart_database:
+    driver: bridge
+  payment_database:
+    driver: bridge
