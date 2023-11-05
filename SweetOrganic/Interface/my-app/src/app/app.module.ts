@@ -8,20 +8,31 @@ import { AppComponent } from './app.component';
 
 import {HeaderComponent} from './header/header.component';
 import {CartComponent} from './cart/cart.component';
+import { LoginComponent } from './login/login.component';
+import { CookieService } from 'ngx-cookie-service';
+
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { ProfilComponent } from './profil/profil.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     CartComponent,
+    LoginComponent,
+    ProfilComponent,
   ],
   imports: [
     BrowserModule,
     MatTabsModule,
     BrowserAnimationsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

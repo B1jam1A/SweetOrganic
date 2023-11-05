@@ -1,0 +1,17 @@
+<div *ngIf="userProfile">
+    <h2>Profil</h2>
+    <p>Nom: {{ userProfile.nom }}</p>
+    <p>Prénom: {{ userProfile.prenom }}</p>
+    <p>Email: {{ userProfile.email }}</p>
+    <p>Téléphone: {{ userProfile.telephone }}</p>
+    <div *ngFor="let adresse of userProfile.adresses">
+      <h3>Adresse</h3>
+      <p>Numéro: {{ adresse.adresse.numero }}</p>
+      <p>Rue: {{ adresse.adresse.rue }}</p>
+      <p>Ville: {{ adresse.adresse.ville }}</p>
+      <p>Code Postal: {{ adresse.adresse.codePostal }}</p>
+      <p>Pays: {{ adresse.adresse.pays }}</p>
+    </div>
+    <p>Date d'inscription: {{ userProfile.date | date }}</p>
+  </div>
+  
