@@ -26,6 +26,7 @@
     border: 0;
     height: 40px;
     margin: 0;
+    padding-left: 20px;
     padding-right: 400px; /* Ajustez la marge droite si nécessaire */
     position: relative;
     z-index: 1;
@@ -34,7 +35,11 @@
   }
   #search_text::placeholder {
     color: #8FBC8F; /* Remplacez #FF0000 par la couleur de votre choix (par exemple, rouge) */
-    }
+  }
+
+  #search_text:focus {
+      outline: none; /* Supprime le contour par défaut sur le focus */
+  }
   // Class
   .logo {
     display: block;
