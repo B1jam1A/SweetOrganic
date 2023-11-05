@@ -74,7 +74,7 @@ services:
       - ./Avis/.env
     #command: ["./wait-for-it.sh", "some-rabbit:5672", "-t", "30", "--", "npm", "start"]
 
-#Mongodb Cart Service
+  #Mongodb Cart Service
   cart_mongodb:
     image: mongo:latest 
     container_name: cart_mongodb
@@ -82,7 +82,7 @@ services:
       - '27019:27017'
     restart: always
 
-#Mongodb Payment Service
+  #Mongodb Payment Service
   payment_mongodb:
     image: mongo:latest 
     container_name: payment_mongodb
@@ -90,7 +90,7 @@ services:
       - '27020:27017'
     restart: always
 
-#Payment Service
+  #Payment Service
   payment_service:
     container_name: payment_service
     build: 
@@ -104,7 +104,7 @@ services:
     env_file:
       - ./PaiementService/.env
     
-#Cart Service
+  #Cart Service
   cart_service:
     container_name: cart_service
     build: 
@@ -117,8 +117,15 @@ services:
       FLASK_DEBUG: "true"
     env_file:
       - ./CartService/.env
-    
 
+  interface_angular:
+      container_name: interface
+      build: 
+        context: ./Interface/my-app
+      ports:
+        - '4200:4200'
+
+      
 volumes:
   mongo_db_product: {}
   mongo_db_user: {}

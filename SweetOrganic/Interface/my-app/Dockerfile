@@ -16,8 +16,7 @@ COPY . .
 
 RUN npm install
 
-EXPOSE 3000
+EXPOSE 4200
 ENV DOCKER = 'true'
 # Start server command
-CMD [ "npm", "start" ]
-
+CMD ["npx", "ng", "serve", "--host", "0.0.0.0"]
