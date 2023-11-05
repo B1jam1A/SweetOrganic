@@ -1,0 +1,102 @@
+// Définition des couleurs basées sur le logo
+$color-primary: #4CAF50; // Une teinte verte similaire à celle des feuilles du logo
+$color-secondary: #30A14E; // Une teinte verte plus foncée pour le contraste
+$color-light: #E8F5E9; // Un vert très clair pour le fond
+$color-dark: #1B5E20; // Un vert sombre pour le texte
+$color-accent: #80E27E; // Un vert lumineux pour les éléments d'accentuation
+
+// Styles généraux pour le corps et le formulaire
+body {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  background-color: $color-light;
+  color: $color-dark;
+  line-height: 1.6;
+}
+
+form {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid $color-secondary;
+  border-radius: 4px;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: $color-accent;
+  }
+}
+
+button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: $color-primary;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $color-secondary;
+  }
+}
+
+// Styles spécifiques pour les champs d'adresse avec une touche organique
+.form-group {
+  &::after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+}
+
+.form-control {
+  float: left;
+  margin-right: 2%;
+  &:last-child {
+    margin-right: 0;
+  }
+  width: 48%;
+
+  // Pour les petits écrans, rendons les champs d'adresse en bloc pour éviter l'encombrement
+  @media (max-width: 600px) {
+    float: none;
+    width: 100%;
+  }
+}
+
+// Utilisation de formArrayName pour les adresses
+div[formArrayName] {
+  border-top: 2px solid $color-secondary;
+  padding-top: 20px;
+  margin-top: 20px;
+
+  > div:not(:first-child) {
+    margin-top: 15px;
+  }
+
+  label {
+    color: $color-dark;
+  }
+}

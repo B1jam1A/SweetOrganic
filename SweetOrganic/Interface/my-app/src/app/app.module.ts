@@ -14,6 +14,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ProfilComponent } from './profil/profil.component';
+import { RegisterComponent } from './register/register.component';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { ProfilComponent } from './profil/profil.component';
     CartComponent,
     LoginComponent,
     ProfilComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,
