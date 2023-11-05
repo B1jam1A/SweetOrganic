@@ -1,14 +1,14 @@
 .cart-content{
     display: flex;
-    background-color: rgb(192, 255, 255);
+    //background-color: rgb(192, 255, 255);
 }
 .cart-content-left{
     flex: 1;
-    background-color: rgb(176, 233, 255);
+    //background-color: rgb(176, 233, 255);
 }
 .cart-content-right{
     flex: 0 0 25%;
-    background-color: rgb(255, 176, 176);
+    //background-color: rgb(255, 176, 176);
 }
 
 .dsp-table{
@@ -20,26 +20,32 @@
 }
 .designation{
     flex: 1;
-    background-color: rgb(255, 176, 248);
+    //background-color: rgb(255, 176, 248);
     text-align: center;
+}
+.txt{
+    font: bold;
+}
+#process{
+    width: 60px;
 }
 .prix{
     flex: 0 0 20%;
-    background-color: rgb(255, 176, 209);
+    //background-color: rgb(255, 176, 209);
     text-align: center;
 }
 .quantite{
     flex: 0 0 20%;
-    background-color: rgb(255, 176, 176);
+    //background-color: rgb(255, 176, 176);
     text-align: center;
 }
 .remove{
     flex: 0 0 12%;
-    background-color: rgb(176, 255, 186);
+    //background-color: rgb(176, 255, 186);
     text-align: center;
 }
 .container{
-    background-color: white;
+    //background-color: white;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 2px 10px 0 rgba(0, 0, 0, 0.05);
 }
 .separator {
@@ -51,6 +57,26 @@
     margin-bottom: 10px; /* Espace de 10 pixels en dessous de chaque élément */
     border-bottom: 1px solid #ddd; /* Ligne de séparation horizontale de 1 pixel d'épaisseur en dessous de chaque élément */
     padding-bottom: 10px; /* Espace de 10 pixels en dessous de chaque élément */
+  }
+
+  /* Styles pour le bouton "Passer Commande" */
+.passer-commande-button {
+    background-color: #007BFF; /* Couleur de fond */
+    color: #fff; /* Couleur du texte */
+    padding: 10px 20px; /* Rembourrage interne */
+    border: none; /* Pas de bordure */
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer; /* Curseur de type main (main pointant vers un lien) */
+    font-size: 16px; /* Taille de la police */
+    text-align: center; /* Centrer le texte horizontalement */
+    text-decoration: none; /* Pas de soulignement */
+    display: inline-block; /* Affichage en ligne, pour s'ajuster au contenu */
+    transition: background-color 0.3s; /* Transition de couleur de fond au survol */
+  }
+  
+  /* Styles au survol du bouton */
+  .passer-commande-button:hover {
+    background-color: #0056b3; /* Couleur de fond au survol */
   }
 /* Styles pour les écrans de taille moyenne */
 @media screen and (min-width: 768px) {

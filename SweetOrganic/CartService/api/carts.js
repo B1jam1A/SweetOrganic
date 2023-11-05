@@ -73,7 +73,7 @@ router.get('/', authentification, async function(req, res, next) {
       listArticlePrice.push(getArticlePrice(articlesList[i]));
     }
     const totalPrice = getTotalPrice(articlesList);
-    res.status(200).send({ title: 'Mon panier', articlesList, listArticlePrice, totalPrice});
+    res.status(200).send({ idPanier: cart._id, articlesList, listArticlePrice, totalPrice});
   
   }catch(err){
     res.json(err);
