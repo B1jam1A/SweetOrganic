@@ -18,8 +18,8 @@ ENV NODE_ENV production
 WORKDIR /usr/src/app
 
 # Copy wait-for-it script and make it executable
-COPY wait-for-it.sh /usr/src/app/
-RUN chmod +x /usr/src/app/wait-for-it.sh
+#COPY wait-for-it.sh /usr/src/app/
+#RUN chmod +x /usr/src/app/wait-for-it.sh
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.npm to speed up subsequent builds.
@@ -41,6 +41,8 @@ EXPOSE 3000
 
 # Run the application.
 #CMD ./wait-for-it.sh some-rabbit:5672 -t 30 -- npm start
-CMD npm start
+#CMD npm start
+USER root
+RUN chmod +x wait-for-it.sh
 
-
+CMD ["/bin/bash", "./wait-for-it.sh", "User_DB:27017", "-t", "60", "--", "/bin/bash", "./wait-for-it.sh", "rabbitmq:5672", "-t", "60", "--", "npm", "start"]

@@ -1,0 +1,30 @@
+<div id="sweetHeader">
+    <div id="top">
+        <div class="logo"></div>
+        <form name="search" method="post" action="" id="formSearch">
+            <div class="search">
+                <input type="text" id="search_text" required="required">
+                <button type="submit" class="submit">
+                    <span>Rechercher</span>
+                </button>
+            </div>
+        </form>
+        <div class="account">
+            <a href="">account</a>
+        </div>
+        <div class="cart">
+            <a routerLink="/cart">panier</a>
+        </div>
+    </div>
+
+    <nav mat-tab-nav-bar>
+        <a mat-tab-link
+            *ngFor="let link of navLinks"
+            [routerLink]="link.link"
+            routerLinkActive #rla="routerLinkActive"
+            [active]="rla.isActive">
+            {{link.label}}
+        </a>
+    </nav>
+</div>
+
