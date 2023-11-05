@@ -1,20 +1,79 @@
 <section class="cart-page">
-
-    <div id="cart-content">
-        <h2>Votre panier :</h2>
-        <div class="cart-content">
-            <div class="cart-content-left">
-                <div class="cart-product-list">
-                    <div class="cart-head"></div>
-                    <div class="item">
-                        <p>i 1</p>
-                        <p>item 2</p>
-                        <p>item 3</p>
-                        <p>item 4</p>
+    <div class="container">
+        <div id="cart-content">
+            <h2>Votre panier : {{ cartData.title }}</h2>
+            <div class="cart-content">
+                <div class="cart-content-left">
+                    <div class="cart-product-list">
+                        <div class="dsp-table cart-head">
+                            <div class="dsp-cell designation">DESIGNATION</div>
+                            <div class="dsp-cell prix">PRIX</div>
+                            <div class="dsp-cell quantite">QUANTITE</div>
+                            <div class="dsp-cell remove">Supprimer</div>
+                        </div>
+                        <div class="separator"></div>
+                        <div class="item dsp-table" *ngFor="let article of cartData.articlesList, let i = index">
+                            
+                            <div class="dsp-cell designation">
+                                <div class="pic">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="txt">
+                                    <div class="title">{{article.name}}</div>
+                                    <div class="stocks">En stock</div>
+                                </div>
+                            </div>
+                            <div class="dsp-cell prix">
+                                <span class="price-prod">
+                                    {{cartData.listArticlePrice[i]}}
+                                </span>
+                            </div>
+                            <div class="dsp-cell quantite">
+                                <form [action]="'cart/UpdateQuantity/' + article.idArticle" method="post" (ngSubmit)="updateQuantity(article.idArticle)">
+                                  <select [(ngModel)]="article.quantity" name="quantity" (change)="submitForm()">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <!-- Ajoutez d'autres options selon vos besoins -->
+                                  </select>
+                                  <input type="submit" [hidden]="true">
+                                </form>
+                            </div>
+                            <div class="dsp-cell remove">
+                                <a href="http://localhost:3001/Cart/allCarts/idpanier/articles/idproduit">
+                                    <img src="assets/img/icone_remove.png" alt="">
+                                </a>
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                </div>
+            
+                <div class="cart-content-right">
+                    <div id="order">
+                        <div class="title-order">Prix Total</div>
+                        <div class="price-tot">
+                            {{cartData.totalPrice}}
+                        </div>
+                        <div class="order-button">
+                            <form action="http://localhost:4200/recap-payment" method="post">
+                                <button class="paye-button">
+                                    Passer comande
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="cart-content-right"></div>
     </div>
+
 </section>

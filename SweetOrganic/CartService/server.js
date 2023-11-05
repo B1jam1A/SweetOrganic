@@ -9,6 +9,9 @@ const connectToMsgBroker = require('./config/consumer')
 var path = require('path');
 var logger = require('morgan');
 const session = require('express-session');
+const cors = require('cors');
+
+
 
 //Use environment defined port or 3000
 var port = process.nextTick.PORT || 3000;
@@ -21,7 +24,9 @@ connectToDb();
 //Create our Express application
 var app = express(); 
 
-
+app.use(cors({
+    origin: 'http://localhost:4200'
+}));
 
 
 // view engine setup
