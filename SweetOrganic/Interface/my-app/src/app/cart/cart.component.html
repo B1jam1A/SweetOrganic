@@ -13,7 +13,6 @@
                         </div>
                         <div class="separator"></div>
                         <div class="item dsp-table" *ngFor="let article of cartData.articlesList, let i = index">
-                            
                             <div class="dsp-cell designation">
                                 <div class="pic">
                                     <img src="" alt="">
@@ -29,25 +28,22 @@
                                 </span>
                             </div>
                             <div class="dsp-cell quantite">
-                                <form [action]="'cart/UpdateQuantity/' + article.idArticle" method="post" (ngSubmit)="updateQuantity(article.idArticle)">
-                                  <select [(ngModel)]="article.quantity" name="quantity" (change)="submitForm()">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                    <!-- Ajoutez d'autres options selon vos besoins -->
-                                  </select>
-                                  <input type="submit" [hidden]="true">
-                                </form>
+                                <select [(ngModel)]="article.quantity" name="quantity" (change)="submitForm()">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <!-- Ajoutez d'autres options selon vos besoins -->
+                                </select>
                             </div>
                             <div class="dsp-cell remove">
-                                <a href="http://localhost:3001/Cart/allCarts/idpanier/articles/idproduit">
+                                <a (click)="supprimerArticleDuPanier(article._id)">
                                     <img src="assets/img/icone_remove.png" alt="">
                                 </a>
                             </div>
@@ -64,11 +60,11 @@
                             {{cartData.totalPrice}}
                         </div>
                         <div class="order-button">
-                            <form action="http://localhost:4200/recap-payment" method="post">
-                                <button class="paye-button">
-                                    Passer comande
-                                </button>
-                            </form>
+                            <a (click)="redirect_payment()">
+                                <div id="process" class="passer-commande-button">
+                                    Passer Commande
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>
