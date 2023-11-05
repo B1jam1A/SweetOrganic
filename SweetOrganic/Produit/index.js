@@ -3,6 +3,12 @@ const app = express();
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const amqp = require('amqplib');
+const cors = require('cors');
+
+app.use(cors({
+    origin: 'http://localhost:4200'
+  }));
+
 
 
 dotenv.config();
@@ -21,6 +27,7 @@ async function connectToDb() {
         console.error('Erreur lors de la connexion à la base de données:', error);
     }
 }
+connectToDb();
 
 
 

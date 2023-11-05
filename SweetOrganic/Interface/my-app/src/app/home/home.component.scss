@@ -1,22 +1,41 @@
+
+// img {
+//     cursor: pointer;
+//     /* autres styles pour l'image */
+//   }
+  
+// .detail-produit {
+//     /* styles pour le panneau de détail */
+//   }
+
+
 .list-tendance, .list-discover {
-    display: flex; /* Utiliser Flexbox pour aligner horizontalement les éléments enfants */
-    justify-content: space-between; /* Espacement égal entre les éléments enfants */
+    display: flex; // Définit le conteneur pour utiliser Flexbox
+    flex-wrap: wrap; // Permet aux éléments de passer à la ligne suivante
+    justify-content: space-between; // Espacement entre les éléments enfants
+    align-items: stretch; // Étire les éléments enfants pour qu'ils aient la même hauteur
 }
 img{
-    width: 200px;
-    height: 200px;
-    text-align: center;
+    width: 100%; // Utiliser 100% pour que l'image soit réactive à la largeur du bloc
+    height: auto; // La hauteur est automatique pour conserver le rapport d'aspect de l'image
+    object-fit: cover; // Assurez-vous que l'image couvre le bloc sans être déformée
 }
 
 .bloc-tendance, .bloc-discover {
-    margin-right: 20px; /* Espace de 20px à droite de chaque élément */
-    width: 200px;
-    height: 220px;
+    margin-right: 20px; // Espace à droite de chaque élément
+    margin-bottom: 20px; // Ajoutez un espace en bas pour séparer les lignes
+    width: 200px; // Largeur fixe pour les éléments enfants
+    height: 220px; // Hauteur fixe pour les éléments enfants
     padding: 5px;
+    overflow: hidden; // Empêche le débordement du contenu
     text-align: center;
-    border: 2px solid #fff; /* Bordure blanche de 2px autour de l'élément */
+    border: 2px solid #fff; // Bordure autour de l'élément
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     transition-duration: 0.4s;
+    // Assurez-vous que le dernier élément de la ligne n'a pas de marge à droite
+    &:last-child {
+        margin-right: 0;
+    }
 }
 
 .bloc-tendance:hover, .bloc-discover:hover {
@@ -37,10 +56,10 @@ a{
     text-decoration: none; /* Supprimer le soulignement du texte */
 }
 span{
-    font-size: 16px; /* Taille de la police */
-    color: #333; /* Couleur du texte (par exemple, gris foncé) */
-    text-align: center; /* Alignement au centre */
-    margin-top: 10px; /* Marge supérieure pour espacement */
+    display: block; // Fait du span un bloc pour occuper toute la largeur du conteneur
+    white-space: nowrap; // Garde le texte sur une seule ligne
+    overflow: hidden; // Cache tout débordement de texte
+    text-overflow: ellipsis; // Ajoute des points de suspension à la fin
 }
 
   /* Styles pour les écrans de taille moyenne */

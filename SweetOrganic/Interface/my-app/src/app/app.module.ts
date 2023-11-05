@@ -6,15 +6,21 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
+
+import { HomeComponent } from './home/home.component';
 import {HeaderComponent} from './header/header.component';
 import {CartComponent} from './cart/cart.component';
 import { LoginComponent } from './login/login.component';
+
+
 import { CookieService } from 'ngx-cookie-service';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ProfilComponent } from './profil/profil.component';
 import { RegisterComponent } from './register/register.component';
+
+import { CommonModule } from '@angular/common';
 
 import { FormsModule } from '@angular/forms';
 @NgModule({
@@ -25,6 +31,7 @@ import { FormsModule } from '@angular/forms';
     LoginComponent,
     ProfilComponent,
     RegisterComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -33,7 +40,8 @@ import { FormsModule } from '@angular/forms';
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    CommonModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

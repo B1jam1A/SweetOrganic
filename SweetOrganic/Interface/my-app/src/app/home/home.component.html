@@ -1,4 +1,23 @@
-<div id="home">
+<!-- Utilisez les classes "list-tendance" ou "list-discover" pour envelopper la liste des produits -->
+<div class="list-tendance">
+    <div *ngFor="let produit of products" (click)="selectionnerProduit(produit)" class="bloc-tendance">
+      <!-- Les images se verront appliquer le style img défini dans le SCSS -->
+      <img [src]="produit.image.url" alt="{{ produit.image.alt }}">
+      <!-- Ajoutez un span pour le nom du produit qui se verra appliquer le style de span défini -->
+      <span>{{ produit.nom }}</span>
+    </div>
+  </div>
+  
+  <!-- Structure pour le produit sélectionné -->
+  <div *ngIf="produitSelectionne" >
+    <h2>{{ produitSelectionne.nom }}</h2>
+    <p>{{ produitSelectionne.description }}</p>
+    <p>{{ produitSelectionne.prix}}</p>
+    <p>{{ produitSelectionne.stock }}</p>
+    <button (click)="produitSelectionne = null">Fermer</button>
+  </div>
+  
+<!-- <div id="home">
     <div class="container">
         <section class="home-tendance">
             <div class="title-home">
@@ -67,4 +86,4 @@
             </div>
         </section>
     </div>
-</div>
+</div> -->
