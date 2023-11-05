@@ -28,9 +28,6 @@ services:
       context: ./Produit
     ports:
       - 3026:3000
-    depends_on:
-      - mongo_db_product
-      - rabbitmq
     env_file:
       - ./Produit/.env
 
@@ -53,9 +50,6 @@ services:
       context: ./Utilisateur
     ports:
       - 3000:3000
-    depends_on:
-      - mongo_db_user
-      - rabbitmq
     env_file:
       - ./Utilisateur/.env
     #command: ["./wait-for-it.sh", "some-rabbit:5672", "-t", "30", "--", "npm", "start"]
@@ -76,9 +70,6 @@ services:
       context: ./Avis
     ports:
       - 3099:3000
-    depends_on:
-      - mongo_db_review
-      - rabbitmq
     env_file:
       - ./Avis/.env
     #command: ["./wait-for-it.sh", "some-rabbit:5672", "-t", "30", "--", "npm", "start"]
