@@ -10,7 +10,7 @@ db.products.insert([
         "categorie": "guimauve",
         "ingredients": ["sucre", "sirop de maïs", "gélatine", "arôme naturel de framboise"],
         "image": {
-            "url": "http://localhost:3026/images/guimauve-framboise.png",
+            "url": "http://localhost:3026/images/guimauve-framboise.jpg",
             "alt": "Guimauve à la framboise"
         },
         "avisIds": [],
@@ -26,7 +26,7 @@ db.products.insert([
         "categorie": "bonbon",
         "ingredients": ["sucre", "sirop de glucose", "acide citrique", "arômes naturels"],
         "image": {
-            "url": "http://localhost:3026/images/bonbons-acidules.png",
+            "url": "http://localhost:3026/images/bonbons-acidules.jpg",
             "alt": "Bonbons acidulés aux fruits"
         },
         "avisIds": [],
@@ -42,7 +42,7 @@ db.products.insert([
         "categorie": "chocolat",
         "ingredients": ["pâte de cacao", "sucre", "beurre de cacao", "vanille"],
         "image": {
-            "url": "http://localhost:3026/images/chocolat-noir.png",
+            "url": "http://localhost:3026/images/chocolat-noir.jpg",
             "alt": "Tablette de chocolat noir 70%"
         },
         "avisIds": [],
@@ -59,7 +59,7 @@ db.products.insert([
     "categorie": "guimauve",
     "ingredients": ["sucre", "sirop de maïs", "gélatine", "chocolat", "arôme naturel de vanille"],
     "image": {
-        "url": "http://localhost:3026/images/guimauve-chocolat.png",
+        "url": "http://localhost:3026/images/guimauve-chocolat.jpg",
         "alt": "Guimauve au chocolat"
     },
     "avisIds": [],
@@ -75,7 +75,7 @@ db.products.insert([
     "categorie": "bonbon",
     "ingredients": ["sucre", "lactose", "dioxyde de carbone", "arôme naturel de cerise"],
     "image": {
-        "url": "http://localhost:3026/images/bonbons-petillants.png",
+        "url": "http://localhost:3026/images/bonbons-petillants.jpg",
         "alt": "Bonbons pétillants à la cerise"
     },
     "avisIds": [],
@@ -90,7 +90,7 @@ db.products.insert([
     "categorie": "chocolat",
     "ingredients": ["sucre", "beurre de cacao", "lait entier en poudre", "noix de coco", "vanille"],
     "image": {
-        "url": "http://localhost:3026/images/chocolat-blanc-noix-de-coco.png",
+        "url": "http://localhost:3026/images/chocolat-blanc-noix-de-coco.jpg",
         "alt": "Chocolat blanc à la noix de coco"
     },
     "avisIds": [],
@@ -107,7 +107,7 @@ db.products.insert([
     "categorie": "guimauve",
     "ingredients": ["sucre", "sirop de maïs", "gélatine", "chocolat", "arôme naturel de vanille"],
     "image": {
-        "url": "http://localhost:3026/images/guimauve-chocolat.png",
+        "url": "http://localhost:3026/images/guimauve-chocolat.jpg",
         "alt": "Guimauve au chocolat"
     },
     "avisIds": [],
@@ -122,7 +122,7 @@ db.products.insert([
     "categorie": "bonbon",
     "ingredients": ["sucre", "lactose", "dioxyde de carbone", "arôme naturel de cerise"],
     "image": {
-        "url": "http://localhost:3026/images/bonbons-petillants.png",
+        "url": "http://localhost:3026/images/bonbons-petillants.jpg",
         "alt": "Bonbons pétillants à la cerise"
     },
     "avisIds": [],
@@ -138,7 +138,7 @@ db.products.insert([
     "categorie": "chocolat",
     "ingredients": ["sucre", "beurre de cacao", "lait entier en poudre", "noix de coco", "vanille"],
     "image": {
-        "url": "http://localhost:3026/images/chocolat-blanc-noix-de-coco.png",
+        "url": "http://localhost:3026/images/chocolat-blanc-noix-de-coco.jpg",
         "alt": "Chocolat blanc à la noix de coco"
     },
     "avisIds": [],
@@ -156,7 +156,7 @@ db.products.insert([
     "categorie": "guimauve",
     "ingredients": ["sucre", "sirop de maïs", "gélatine", "caramel", "sel"],
     "image": {
-        "url": "http://localhost:3026/images/guimauve-caramel.png",
+        "url": "http://localhost:3026/images/guimauve-caramel.jpg",
         "alt": "Guimauve au caramel salé"
     },
     "avisIds": [],
@@ -171,7 +171,7 @@ db.products.insert([
     "categorie": "guimauve",
     "ingredients": ["sucre", "sirop de maïs", "gélatine", "arôme naturel de citron", "colorant jaune"],
     "image": {
-        "url": "http://localhost:3026/images/guimauve-citron.png",
+        "url": "http://localhost:3026/images/guimauve-citron.jpg",
         "alt": "Guimauve au citron"
     },
     "avisIds": [],
@@ -186,7 +186,7 @@ db.products.insert([
     "categorie": "guimauve",
     "ingredients": ["sucre", "sirop de maïs", "gélatine", "arômes naturels de baies", "colorants naturels"],
     "image": {
-        "url": "http://localhost:3026/images/guimauve-baies.png",
+        "url": "http://localhost:3026/images/guimauve-baies.jpg",
         "alt": "Guimauve aux baies sauvages"
     },
     "avisIds": [],
@@ -203,7 +203,7 @@ db.products.insert([
     "categorie": "bonbon",
     "ingredients": ["sucre", "sirop de glucose", "acide malique", "arôme naturel de pomme"],
     "image": {
-        "url": "http://localhost:3026/images/bonbons-pomme.png",
+        "url": "http://localhost:3026/images/bonbons-pomme.jpg",
         "alt": "Bonbons durs à la pomme verte"
     },
     "avisIds": [],
@@ -218,7 +218,7 @@ db.products.insert([
     "categorie": "bonbon",
     "ingredients": ["sucre", "sirop de glucose", "gélatine", "arômes naturels", "colorants naturels"],
     "image": {
-        "url": "http://localhost:3026/images/bonbons-oursons.png",
+        "url": "http://localhost:3026/images/bonbons-oursons.jpg",
         "alt": "Bonbons gélifiés en forme d'oursons"
     },
     "avisIds": [],
@@ -233,7 +233,7 @@ db.products.insert([
     "categorie": "bonbon",
     "ingredients": ["mélasse", "farine de blé", "sucre", "sirop de glucose", "arôme de réglisse"],
     "image": {
-        "url": "http://localhost:3026/images/bonbons-reglisse.png",
+        "url": "http://localhost:3026/images/bonbons-reglisse.jpg",
         "alt": "Bonbons à la réglisse douce"
     },
     "avisIds": [],
@@ -250,7 +250,7 @@ db.products.insert([
     "categorie": "chocolat",
     "ingredients": ["pâte de cacao", "sucre", "beurre de cacao", "grains de café", "vanille"],
     "image": {
-        "url": "http://localhost:3026/images/chocolat-cafe.png",
+        "url": "http://localhost:3026/images/chocolat-cafe.jpg",
         "alt": "Chocolat noir aux éclats de café"
     },
     "avisIds": [],

@@ -11,7 +11,7 @@ img{
 .bloc-tendance, .bloc-discover {
     margin-right: 20px; /* Espace de 20px à droite de chaque élément */
     width: 200px;
-    height: 200px;
+    height: 220px;
     padding: 5px;
     text-align: center;
     border: 2px solid #fff; /* Bordure blanche de 2px autour de l'élément */
@@ -33,7 +33,15 @@ img{
 .bloc-tendance:last-child, .bloc-discover:last-child {
     margin-right: 0;
 }
-
+a{
+    text-decoration: none; /* Supprimer le soulignement du texte */
+}
+span{
+    font-size: 16px; /* Taille de la police */
+    color: #333; /* Couleur du texte (par exemple, gris foncé) */
+    text-align: center; /* Alignement au centre */
+    margin-top: 10px; /* Marge supérieure pour espacement */
+}
 
   /* Styles pour les écrans de taille moyenne */
   @media screen and (min-width: 768px) {

@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+//import { ImageService } from '../services/image.service'; // Assurez-vous que le chemin est correct
 
 @Component({
     selector: 'app-home',
@@ -8,8 +9,8 @@ import { Component, OnInit } from "@angular/core";
 
 export class HomeComponent implements OnInit{
 
-    ngOnInit(){
+  ngOnInit() {
 
-    }
+  }
     
 }
