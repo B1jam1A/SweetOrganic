@@ -11,6 +11,9 @@ FROM node:${NODE_VERSION}-alpine
 # Install bash
 RUN apk add --no-cache bash
 
+# Installez dos2unix
+RUN apk --no-cache add dos2unix
+
 # Use production node environment by default.
 ENV NODE_ENV production
 
@@ -45,6 +48,10 @@ EXPOSE 3000
 #CMD npm start
 
 USER root
+
+# Convertissez le script "wait-for-it.sh" en format Unix/Linux
+RUN dos2unix wait-for-it.sh
+
 RUN chmod +x wait-for-it.sh
 
 CMD ["/bin/bash", "./wait-for-it.sh", "Review_DB:27017", "-t", "60", "--", "/bin/bash", "./wait-for-it.sh", "rabbitmq:5672", "-t", "60", "--", "npm", "start"]

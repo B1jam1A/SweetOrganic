@@ -22,36 +22,7 @@ async function connectToDb() {
     }
 }
 
-connectToDb();
 
-async function connectToMQ() {
-    try {
-        const connection = await amqp.connect(process.env.MQ_CONNECT);
-        const channel = await connection.createChannel();
-
-        const queue = 'jobs';
-
-        // Exemple de message JSON
-        const message = {
-            msg: "Un message a été envoyé depuis le MS Produit",
-            timestamp: new Date().toISOString(),
-            // Ajoutez d'autres propriétés ici si nécessaire
-        };
-
-        // Convertir l'objet JSON en chaîne et ensuite en buffer
-        const messageBuffer = Buffer.from(JSON.stringify(message));
-
-        await channel.assertQueue(queue, { durable: true });
-        channel.sendToQueue(queue, messageBuffer);
-
-        console.log("Message sent:", message);
-
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-connectToMQ();
 
 
 //Ajouter une route pour le dossier images

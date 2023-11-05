@@ -6,41 +6,6 @@ const {authentificationCustomer}= require('./verifyToken');
 const amqp = require('amqplib');
 
 
-let lastReceivedMessage = null;
-async function connectToMQ() {
-    try {
-        const connection = await amqp.connect(process.env.MQ_CONNECT);
-        const channel = await connection.createChannel();
-        
-        const queue = 'jobs';
-        await channel.assertQueue(queue);
-
-        // Écoute des messages
-        channel.consume(queue, message => {
-            const messageContent = message.content.toString();
-            try {
-                const jsonMessage = JSON.parse(messageContent);
-                console.log("Received JSON Message:", jsonMessage);
-
-                // Stocker le dernier message reçu
-                lastReceivedMessage = jsonMessage;
-
-            } catch (parseError) {
-                console.error("Failed to parse JSON:", parseError);
-            }
-
-            // Acknowledge the message
-            channel.ack(message);
-
-        }, { noAck: false });
-
-        console.log("Waiting for messages...");
-
-    } catch (error) {
-        console.log(error);
-    }
-}
-connectToMQ(); 
 
 
 async function createCartToMQ(idCustumer) {
