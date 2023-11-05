@@ -14,7 +14,8 @@ db.products.insert([
             "alt": "Guimauve à la framboise"
         },
         "avisIds": [],
-        "statut": "actif"
+        "statut": "actif",
+        "price_id": "price_1O8rURLisy8csVQhRz7YZMfL"
     },
 
     {
@@ -29,7 +30,8 @@ db.products.insert([
             "alt": "Bonbons acidulés aux fruits"
         },
         "avisIds": [],
-        "statut": "actif"
+        "statut": "actif",
+        "price_id": "price_1O8rViLisy8csVQhsYcIfFtf"
     },
 
     {
@@ -44,7 +46,8 @@ db.products.insert([
             "alt": "Tablette de chocolat noir 70%"
         },
         "avisIds": [],
-        "statut": "actif"
+        "statut": "actif",
+        "price_id": "price_1O8rWDLisy8csVQhXv9vhUWq"
     },
 
     // Autre produit pour la catégorie: guimauve
@@ -60,10 +63,11 @@ db.products.insert([
         "alt": "Guimauve au chocolat"
     },
     "avisIds": [],
-    "statut": "actif"
+    "statut": "actif",
+    "price_id": "price_1O8rWQLisy8csVQhLHd4Xvws"
 },
 // Autre produit pour la catégorie: bonbon
-{
+/*{
     "nom": "Bonbons pétillants à la cerise",
     "description": "Bonbons sucrés qui crépitent dans la bouche, offrant une expérience amusante et délicieuse.",
     "prix": 1.70,
@@ -76,7 +80,7 @@ db.products.insert([
     },
     "avisIds": [],
     "statut": "actif"
-},
+},*/
 // Autre produit pour la catégorie: chocolat
 {
     "nom": "Chocolat blanc à la noix de coco",
@@ -90,11 +94,12 @@ db.products.insert([
         "alt": "Chocolat blanc à la noix de coco"
     },
     "avisIds": [],
-    "statut": "actif"
+    "statut": "actif",
+    "price_id": "price_1O8rWiLisy8csVQhcJZVD2IA"
 },
 
 // Autre produit pour la catégorie: guimauve
-{
+/*{
     "nom": "Guimauve au chocolat",
     "description": "Guimauves moelleuses enrobées de chocolat fondant. Un mariage parfait pour les gourmands.",
     "prix": 3.00,
@@ -107,7 +112,7 @@ db.products.insert([
     },
     "avisIds": [],
     "statut": "actif"
-},
+},*/
 // Autre produit pour la catégorie: bonbon
 {
     "nom": "Bonbons pétillants à la cerise",
@@ -121,10 +126,11 @@ db.products.insert([
         "alt": "Bonbons pétillants à la cerise"
     },
     "avisIds": [],
-    "statut": "actif"
+    "statut": "actif",
+    "price_id": "price_1O8rYfLisy8csVQhnQej2geB"
 },
 // Autre produit pour la catégorie: chocolat
-{
+/*{
     "nom": "Chocolat blanc à la noix de coco",
     "description": "Tablette de chocolat blanc crémeux parsemée de copeaux de noix de coco. Une sensation tropicale à chaque bouchée.",
     "prix": 3.50,
@@ -136,8 +142,8 @@ db.products.insert([
         "alt": "Chocolat blanc à la noix de coco"
     },
     "avisIds": [],
-    "statut": "actif"
-},
+    "statut": "actif",
+},*/
 
 // ...
 
@@ -154,7 +160,8 @@ db.products.insert([
         "alt": "Guimauve au caramel salé"
     },
     "avisIds": [],
-    "statut": "actif"
+    "statut": "actif",
+    "price_id": "price_1O8rZZLisy8csVQhv5TQrAZS"
 },
 {
     "nom": "Guimauve au citron",
@@ -168,7 +175,8 @@ db.products.insert([
         "alt": "Guimauve au citron"
     },
     "avisIds": [],
-    "statut": "actif"
+    "statut": "actif",
+    "price_id": "price_1O8ra2Lisy8csVQhBJvCXwj9"
 },
 {
     "nom": "Guimauve aux baies sauvages",
@@ -182,7 +190,8 @@ db.products.insert([
         "alt": "Guimauve aux baies sauvages"
     },
     "avisIds": [],
-    "statut": "actif"
+    "statut": "actif",
+    "price_id": "price_1O8raILisy8csVQhbZbZcLO6"
 },
 
 // Bonbons
@@ -198,7 +207,8 @@ db.products.insert([
         "alt": "Bonbons durs à la pomme verte"
     },
     "avisIds": [],
-    "statut": "actif"
+    "statut": "actif",
+    "price_id": "price_1O8ralLisy8csVQhHjPlLLNk"
 },
 {
     "nom": "Bonbons gélifiés en forme d'oursons",
@@ -212,7 +222,8 @@ db.products.insert([
         "alt": "Bonbons gélifiés en forme d'oursons"
     },
     "avisIds": [],
-    "statut": "actif"
+    "statut": "actif",
+    "price_id": "price_1O8razLisy8csVQhSlWZv611"
 },
 {
     "nom": "Bonbons à la réglisse douce",
@@ -226,7 +237,8 @@ db.products.insert([
         "alt": "Bonbons à la réglisse douce"
     },
     "avisIds": [],
-    "statut": "actif"
+    "statut": "actif",
+    "price_id": "price_1O8rb9Lisy8csVQhEgO2lyz3"
 },
 
 // Chocolats
@@ -242,7 +254,8 @@ db.products.insert([
         "alt": "Chocolat noir aux éclats de café"
     },
     "avisIds": [],
-    "statut": "actif"
+    "statut": "actif",
+    "price_id": "price_1O8rbMLisy8csVQhYwBIaQ4R"
 },
 
 ]);
