@@ -1,23 +1,20 @@
-# Start your image with a node base image
+# Utilisez une image Node.js comme base
 FROM node:20.9-alpine
 
-# Create app directory
+# Installez Bash
+RUN apk --no-cache add bash
+
+# Créez un répertoire de travail
 WORKDIR /app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where availabe (npm@5+)
+# Copiez les fichiers package.json et package-lock.json dans le conteneur
 COPY package*.json ./
 
-# If you are building your code for production
-# RUN npm ci --omit=dev
+# Installez les dépendances de l'application
+RUN npm install
 
 COPY . .
 
-RUN npm install
+RUN chmod +x wait-for-it.sh
 
-EXPOSE 3000
-ENV DOCKER = 'true'
-# Start server command
-CMD [ "npm", "start" ]
-
+CMD ["/bin/bash", "./wait-for-it.sh", "cart_mongodb:27017", "-t", "60", "--", "/bin/bash", "./wait-for-it.sh", "rabbitmq:5672", "-t", "60", "--", "npm", "start"]
