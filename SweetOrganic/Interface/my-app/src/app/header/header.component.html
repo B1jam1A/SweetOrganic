@@ -1,22 +1,39 @@
 <div id="sweetHeader">
     <div id="top">
-        <div class="logo"></div>
-        <form name="search" method="post" action="" id="formSearch">
-            <div class="search">
-                <input type="text" id="search_text" required="required">
-                <button type="submit" class="submit">
-                    <span>Rechercher</span>
-                </button>
+        <div class="container">
+            <div class="wrap-header">
+                <div class="logo">
+                    <a href="http://localhost:4200/">
+                        <img src="assets/img/logo_transparent.png" alt="Logo SweetOrganic">
+                    </a>
+                </div>
+                <form name="search" method="post" action="" id="formSearch" >
+                    <div class="search">
+                        <input type="text" id="search_text" required="required" placeholder="Rechercher un produit...">
+                        <button type="submit" class="submit">
+                            <span class="fa-layers fa-fw">
+                                <i class="fas fa-search"></i> <!-- Icône de recherche -->
+                            </span>
+                        </button>
+                    </div>
+                </form>
+                <div class="account">
+                    <a href="">
+                        <img class="top-icone" src="assets/img/icone_account.png">
+                    </a>
+                </div>
+                <div class="cart">
+                    <a routerLink="/cart">
+                        <img class="top-icone" src="assets/img/icone_panier.png">
+                    </a>
+                </div>
             </div>
-        </form>
-        <div class="account">
-            <a href="">account</a>
         </div>
-        <div class="cart">
-            <a routerLink="/cart">panier</a>
-        </div>
-    </div>
 
+    </div>
+</div>
+
+<!--
     <nav mat-tab-nav-bar>
         <a mat-tab-link
             *ngFor="let link of navLinks"
@@ -26,5 +43,4 @@
             {{link.label}}
         </a>
     </nav>
-</div>
-
+-->
