@@ -1,0 +1,47 @@
+<div>
+    <form [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
+      <div>
+        <label>Nom:</label>
+        <input type="text" formControlName="nom">
+      </div>
+      <div>
+        <label>Prénom:</label>
+        <input type="text" formControlName="prenom">
+      </div>
+      <div>
+        <label>Email:</label>
+        <input type="email" formControlName="email">
+      </div>
+      <div>
+        <label>Mot de passe:</label>
+        <input type="password" formControlName="password">
+      </div>
+      <div>
+        <label>Téléphone:</label>
+        <input type="text" formControlName="telephone">
+      </div>
+     <!-- ... Autres champs du formulaire ... -->
+
+     <div formArrayName="adresses">
+        <div *ngFor="let address of adresses.controls; let i = index" [formGroupName]="i">
+          <label>Numéro:</label>
+          <input type="text" formControlName="numero">
+          <label>Rue:</label>
+          <input type="text" formControlName="rue">
+          <label>Ville:</label>
+          <input type="text" formControlName="ville">
+          <label>Code Postal:</label>
+          <input type="text" formControlName="codePostal">
+          <label>Pays:</label>
+          <input type="text" formControlName="pays">
+          <!-- Vous pouvez ajouter un bouton pour supprimer cette adresse si vous le souhaitez -->
+        </div>
+      </div>
+      
+      <!-- Bouton pour ajouter une adresse -->
+      <button type="button" (click)="addAddress()">Ajouter une autre adresse</button>
+      
+      <button routerLink="/home">S'inscrire</button>
+
+    </form>
+  </div>

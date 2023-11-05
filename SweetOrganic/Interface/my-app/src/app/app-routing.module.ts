@@ -4,15 +4,18 @@ import { RouterModule, Routes } from '@angular/router';
 import {CartComponent} from './cart/cart.component';
 import { LoginComponent } from './login/login.component';
 import { ProfilComponent } from './profil/profil.component';
-
+import { RegisterComponent } from './register/register.component';
 
 import {HomeComponent} from './home/home.component';
+import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'cart', component: CartComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'profil', component: ProfilComponent },
+  { path: 'profil', component: ProfilComponent,  canActivate: [AuthGuard]},
+  { path: 'register', component: RegisterComponent },
+
 
 
   { path: '', redirectTo: '/home', pathMatch: 'full' },

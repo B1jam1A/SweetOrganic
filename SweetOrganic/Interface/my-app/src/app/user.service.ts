@@ -17,7 +17,30 @@ export class UserService {
       'Authorization': `Bearer ${this.cookieService.get('authToken')}`
     });
 
-    // Utilisez http.get() au lieu de http.post()
+
     return this.http.get(`${this.apiUrl}/me`, { headers: headers });
+  }
+
+  registerUser(userData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, userData);
+  }
+
+  logoutUser(): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.cookieService.get('authToken')}`
+    });
+
+    // Pas de corps de requête nécessaire, donc on passe un objet vide.
+    return this.http.post(`${this.apiUrl}/logout`, {}, { headers: headers, responseType: 'text'});
+  }
+
+  logoutAllUser(): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.cookieService.get('authToken')}`
+    });
+    // Pas de corps de requête nécessaire, donc on passe un objet vide.
+    return this.http.post(`${this.apiUrl}/logout/all`, {}, { headers: headers, responseType: 'text' });
   }
 }

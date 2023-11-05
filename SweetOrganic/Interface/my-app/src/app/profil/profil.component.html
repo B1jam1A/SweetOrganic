@@ -13,5 +13,7 @@
       <p>Pays: {{ adresse.adresse.pays }}</p>
     </div>
     <p>Date d'inscription: {{ userProfile.date | date }}</p>
+    <button (click)="logout()">Se déconnecter</button>
+    <button (click)="logoutAll()">Se déconnecter de tous les appareils</button>
   </div>
   
