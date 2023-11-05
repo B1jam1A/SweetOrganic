@@ -1,17 +1,15 @@
-version: '3'
+version: '3.7'
 
 services:
-
   # Configuration pour RabbitMQ
   rabbitmq:
-    container_name: rabbitmq
     image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
     ports:
-      - 15672:15672
-      - 5672:5672
-    restart: always
-    networks:
-      - msgbroker
+        - '5672:5672'
+        - '8080:15672'
+    volumes:
+        - ./rabbitmq/lib:/var/lib/rabbitmq
 
   # Configuration pour Produit
   mongo_db_product:
@@ -23,8 +21,6 @@ services:
       - ./Produit/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     ports:
       - 27026:27017
-    networks:
-      - prod_db_net
 
   app_product:
     container_name: Product_API
@@ -37,9 +33,7 @@ services:
       - rabbitmq
     env_file:
       - ./Produit/.env
-    networks:
-      - prod_db_net
-      - msgbroker
+
     #command: ["./wait-for-it.sh", "some-rabbit:5672", "-t", "30", "--", "npm", "start"]
 
   # Configuration pour Utilisateur
@@ -52,8 +46,6 @@ services:
       - ./Utilisateur/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     ports:
       - 27018:27017
-    networks:
-      - user_db_net
 
   app_user:
     container_name: User_API
@@ -66,9 +58,6 @@ services:
       - rabbitmq
     env_file:
       - ./Utilisateur/.env
-    networks:
-      - user_db_net
-      - msgbroker
     #command: ["./wait-for-it.sh", "some-rabbit:5672", "-t", "30", "--", "npm", "start"]
 
     # Configuration pour Avis
@@ -80,8 +69,6 @@ services:
       - mongo_db_review:/data/db 
     ports:
       - 27099:27017
-    networks:
-      - review_db_net
 
   app_review:
     container_name: Review_API
@@ -94,88 +81,57 @@ services:
       - rabbitmq
     env_file:
       - ./Avis/.env
-    networks:
-      - review_db_net
-      - msgbroker
     #command: ["./wait-for-it.sh", "some-rabbit:5672", "-t", "30", "--", "npm", "start"]
+
+#Mongodb Cart Service
+  cart_mongodb:
+    image: mongo:latest 
+    container_name: cart_mongodb
+    ports:
+      - '27019:27017'
+    restart: always
+
+#Mongodb Payment Service
+  payment_mongodb:
+    image: mongo:latest 
+    container_name: payment_mongodb
+    ports:
+      - '27020:27017'
+    restart: always
+
+#Payment Service
+  payment_service:
+    container_name: payment_service
+    build: 
+      context: ./PaiementService
+    ports:
+      - '3002:3000'
+    volumes:
+      - .:/code
+    environment:
+      FLASK_DEBUG: "true"
+    env_file:
+      - ./PaiementService/.env
+    
+#Cart Service
+  cart_service:
+    container_name: cart_service
+    build: 
+      context: ./CartService
+    ports:
+      - '3001:3000'
+    volumes:
+      - .:/code
+    environment:
+      FLASK_DEBUG: "true"
+    env_file:
+      - ./CartService/.env
     
 
 volumes:
   mongo_db_product: {}
   mongo_db_user: {}
   mongo_db_review: {}
-
-#Réseaux
-networks:
-  msgbroker:
-    driver: bridge
-  user_db_net:
-    driver: bridge
-  prod_db_net:
-    driver: bridge
-  review_db_net:
-    driver: bridge
-    
-    
-# version: '3'
-
-# services:
-
-#   # Configuration pour RabbitMQ
-#   rabbitmq:
-#     container_name: some-rabbit
-#     image: rabbitmq:3-management
-#     ports:
-#       - 15672:15672
-#       - 5672:5672
-#     restart: always
-
-#   # Configuration pour Produit
-#   mongo_db_product:
-#     container_name: Product_DB
-#     image: mongo:latest
-#     restart: always
-#     volumes:
-#       - mongo_db_product:/data/db 
-#     ports:
-#       - 27026:27017
-
-#   app_product:
-#     container_name: Product_API
-#     build:
-#       context: ./Produit
-#     ports:
-#       - 3026:3000
-#     depends_on:
-#       - mongo_db_product
-#       - rabbitmq
-#     env_file:
-#       - ./Produit/.env
-
-#   # Configuration pour Utilisateur
-#   mongo_db_user:
-#     container_name: User_DB
-#     image: mongo:latest   
-#     restart: always
-#     volumes:
-#       - mongo_db_user:/data/db 
-#     ports:
-#       - 27018:27017
-
-#   app_user:
-#     container_name: User_API
-#     build:
-#       context: ./Utilisateur
-#     ports:
-#       - 3000:3000
-#     depends_on:
-#       - mongo_db_user
-#       - rabbitmq
-#     env_file:
-#       - ./Utilisateur/.env
-
-# volumes:
-#   mongo_db_product: {}
-#   mongo_db_user: {}
-
+  payment_mongodb: {}
+  cart_mongodb: {}
 
