@@ -4,6 +4,7 @@ import { FormBuilder, FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { query } from "@angular/animations";
 import { CookieService } from "ngx-cookie-service";
+import { Router } from '@angular/router';
 @Component({
     selector: 'app-cart',
     templateUrl: './cart.component.html',
@@ -13,7 +14,8 @@ import { CookieService } from "ngx-cookie-service";
 export class CartComponent{
     cartData: any = '';
 
-    constructor(private fb: FormBuilder, private http: HttpClient, private cartService: CartService, private cookieService: CookieService){
+    constructor(private fb: FormBuilder, private http: HttpClient, 
+      private cartService: CartService, private cookieService: CookieService, private router: Router){
 
     }
 
@@ -84,10 +86,11 @@ export class CartComponent{
             'Authorization': `Bearer ${this.cookieService.get('authToken')}`
         });
 
-        this.http.get('http://localhost:3001/redirect-payment', { headers }).subscribe(
+        this.http.get('http://localhost:3001/Cart/redirect-payment', { headers }).subscribe(
           response => {
             // Redirige vers le payment
             console.log('redirection vers le paiement...', response);
+            this.router.navigate(['/payment']);
           },
           error => {
             console.error('Erreur lors de la suppression de l\'article', error);

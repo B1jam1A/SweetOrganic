@@ -12,6 +12,7 @@ dotenv.config();
 const amqp = require('amqplib');
 //Library Stripe
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const cors = require('cors');
 
 //Connect to the MongoDB
 connectToDb();
@@ -69,10 +70,14 @@ connectToMQ();
 //Create our Express application
 var app = express(); 
 
+app.use(cors({
+    origin: 'http://localhost:4200'
+}));
+
 //Use environment defined port or 4242
 const port = process.env.PORT || 3000;
 const DOMAIN = `http://localhost:${port}`;
-//console.log('DOMAINE = ' + DOMAIN);
+console.log('DOMAINE = ' + DOMAIN);
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({
@@ -85,9 +90,9 @@ app.set('view engine', 'pug');
 //Creation d'une session avec Stripe
 app.post('/create-checkout-session', authentification, async(req, res) => {
 
-
+    console.log("Création d'une session Stripe...");
     const user_id = req.decodedToken._id;
-    
+    console.log("CartData :" +cartData);
     if(cartData.user_id !== user_id){
         return res.status(403).send("Forbbiden request: Payment service refused");
     }
@@ -96,8 +101,8 @@ app.post('/create-checkout-session', authentification, async(req, res) => {
         var session = await stripe.checkout.sessions.create({
             line_items: createLineItem(cartData.articlesList),
             mode: 'payment',
-            success_url: `http://localhost:${port}/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `http://localhost:${port}/error`,
+            success_url: `http://localhost:3002/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `http://localhost:3002/error`,
         });
     }catch(err){
         return res.send(err);
@@ -131,7 +136,7 @@ app.get('/success', async (req, res) => {
     }
 
     // Construire l'URL complète de redirection
-    const redirectURL = `http://localhost:4000/success?session_id=${session_id}`;
+    const redirectURL = `http://localhost:4200/success?session_id=${session_id}`;
 
     // Rediriger l'utilisateur vers l'URL de succès sur le port 4000
     res.redirect(redirectURL);

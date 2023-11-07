@@ -1,0 +1,19 @@
+  /* Styles pour le bouton "Passer Commande" */
+  .pay-button {
+    background-color: #007BFF; /* Couleur de fond */
+    color: #fff; /* Couleur du texte */
+    padding: 10px 20px; /* Rembourrage interne */
+    border: none; /* Pas de bordure */
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer; /* Curseur de type main (main pointant vers un lien) */
+    font-size: 16px; /* Taille de la police */
+    text-align: center; /* Centrer le texte horizontalement */
+    text-decoration: none; /* Pas de soulignement */
+    display: inline-block; /* Affichage en ligne, pour s'ajuster au contenu */
+    transition: background-color 0.3s; /* Transition de couleur de fond au survol */
+  }
+  
+  /* Styles au survol du bouton */
+  .pay-button:hover {
+    background-color: #0056b3; /* Couleur de fond au survol */
+  }
